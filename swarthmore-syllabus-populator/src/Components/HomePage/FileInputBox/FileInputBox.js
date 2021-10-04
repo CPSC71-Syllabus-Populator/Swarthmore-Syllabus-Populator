@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
 const FileInputBox = () => {
     return (
         <div>
-            Upload file here
+            <input type="file" name="file" />
         </div>
     )
 }

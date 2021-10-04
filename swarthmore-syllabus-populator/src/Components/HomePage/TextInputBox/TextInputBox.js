@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
 const TextInputBox = () => {
     return (
         <div>
-            Text input box here
+            <textarea placeholder="Paste text here" rows="4" cols="50"></textarea>
         </div>
     )
 }
