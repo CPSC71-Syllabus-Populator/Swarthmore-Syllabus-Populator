@@ -1,18 +1,20 @@
 import React from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const LinkInputBox = () => {
     const [link, setLink] = useState("");
-
-    const onChange = () => {
-        console.log(link);
-    }
     
     const handleChange = (e) => {
-        setLink(e.target.value)
-        console.log(e.target.value)
-        console.log(link)
+        const target = e.target;
+        //const name = target.name;
+        const value = target.value;
+
+        setLink(value);
     }
+
+    useEffect(() => {
+        console.log(link);
+    }, [link]);
 
     const resetField = () => {
         setLink("");
@@ -22,9 +24,10 @@ const LinkInputBox = () => {
         <div>
             <input
                 type="text"
+                name="link"
                 placeholder="Paste link here"
+                value={link}
                 onChange={handleChange}
-                name="name"
             />
             <input
                 type="submit"

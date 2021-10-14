@@ -5,7 +5,7 @@ import TextInputBox from "./TextInputBox/TextInputBox";
 import LinkInputBox from "./LinkInputBox/LinkInputBox";
 
 const HomePage = () => {
-    const [inputMethod, setInputMethod] = useState("");
+    const [inputMethod, setInputMethod] = useState("File");
     return (
         <div>
             <div>
