@@ -10,13 +10,11 @@ import re
 # the difference between input() and sys.stdin.readline() is that the former doesn't
 # read the escape char but we don't need it here 
 
-
-
-
 #filename = input("please enter the file name: ")  # TODO uncomment
 
 filename = '/Users/Arina/Desktop/Swarthmore-Syllabus-Populator/sample-syllabi/M34Fall_2019syll.pdf'
-
+filename = '/Users/Arina/Desktop/Swarthmore-Syllabus-Populator/sample-syllabi/Popular Myths Syllabus.pdf'
+filename = '/Users/Arina/Desktop/Swarthmore-Syllabus-Populator/sample-syllabi/MATH027.pdf'
 """ 
 with pdfplumber.open(filename) as pdf:   # open method returns a pdfplumber.PDF obj
     pages = pdf.pages   # list of pages 
@@ -27,12 +25,8 @@ with pdfplumber.open(filename) as pdf:   # open method returns a pdfplumber.PDF 
     print("ROWS:\n", first_page_text)
 
 """
-#first_page= pages[0].extract_text()
-#print("ALL:\n", first_page_rows)
 
 # /Users/arina/Desktop/Swarthmore-Syllabus-Populator/swarthmore-syllabus-populator
-
-
 
 syll = pdfplumber.open(filename)
 # first_page = syll.pages[0]
@@ -47,19 +41,20 @@ weekDays = set(["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","S
 
 weekDaysArr = []
 
-
-
 for ind, page in enumerate(syll.pages):
     text = page.extract_text()
     # Splitting characters in String by ',' OR '_', OR '-', OR ... etc
     res = re.split(', |_|-|\n| |%|. |\t', text)
-
+    res =  list(filter(None, res))   #remove empty spaces from the list of words that were parced
+    #print(res) print all words
     numsArr = []
     for el in res:
         if el.isdigit():
             numsArr.append(el)
         if el in weekDays:
             weekDaysArr.append(el)
+
+        # check if the word is next to other 
 
     
     print("all nums extracted from page {} are: {}".format(ind, numsArr))
