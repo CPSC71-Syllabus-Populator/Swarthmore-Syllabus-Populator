@@ -7,6 +7,7 @@ UPLOAD_FOLDER = "./".join(["./uploads"])
 
 main = Blueprint('main', __name__)
 
+
 @main.route('/parse_pdf', methods=['POST'])
 def parse_pdf():
     if not os.path.isdir(UPLOAD_FOLDER):
@@ -22,3 +23,13 @@ def parse_pdf():
         content = content.join([page.extract_text() for page in pdf.pages])
 
     return 'Parsed', 201
+
+
+@main.route('/link_test', methods=['POST'])
+def link_test():
+    link_json = request.get_json()
+
+    link = link_json.get('link')
+    print(link)
+
+    return 'Linktest', 201
