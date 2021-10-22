@@ -6,7 +6,7 @@
 import pdfplumber
 import re
 from itertools import product
-
+import parsing_helpers as par
 
 
 # the difference between input() and sys.stdin.readline() is that the former doesn't
@@ -51,11 +51,11 @@ if filename.endswith('.pdf'):
 
 
 
-keywords = set(("OH", "office", "hours", "meeting", "class", "sessions", 
-"sessions", "drop-in"))
+keywords = ["OH", "office", "hours", "meeting", "class", "sessions",
+"sessions", "drop-in"]
 
-weekDays = set(["monday","tuesday","wednesday","thursday","friday","saturday","sunday", 
-"mon", "tue","wed","thu","thur","fri","sat","sun", "mwt", "tth"])
+weekDays = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday",
+"mon", "tue","wed","thu","thur","fri","sat","sun", "mwt", "tth", "mondays","tuesdays","wednesdays","thursdays","fridays","saturdays","sundays"]
 
 weekDaysArr = []
 numsArr = []
@@ -70,7 +70,9 @@ weekdayIndsArr = []
 #    text = page.extract_text()
 #    # Splitting characters in String by ',' OR '_', OR '-', OR ... etc
 res = re.split(', |_|-|\n| |%|. |\t', all_text)
-res =  list(filter(None, res))   #remove empty spaces from the list of words that were parced
+res = re.split(' |\n', all_text)
+res = list(filter(None, res))   #remove empty spaces from the list of words that were parced
+
 
 #print(res) print all words
 for ind, el in enumerate(res):
@@ -84,12 +86,6 @@ for ind, el in enumerate(res):
         foundKeywords.append(el)
         keywordIndsArr.append(ind)
 
-
-
-        # check if the word is next to other 
-
-    
-
 print("{} nums extracted: {}".format(len(numsArr), numsArr))
 print("{} weekdays extracted: {}".format(len(weekDaysArr), weekDaysArr))
 print("{} keywords extracted: {}".format(len(keywordIndsArr), foundKeywords))
@@ -99,21 +95,22 @@ print("the closest matching pairs are")
 pairs = sorted(product(numIndsArr, keywordIndsArr), key=lambda t: abs(t[0]-t[1]))
 
 
-#print("print all matched pairs", pairs)
-
-for i in range(len(weekDaysArr)):
+for i in range(len(keywordIndsArr)):
     currPair = pairs[i]
     print(currPair, ":", res[currPair[0]], res[currPair[1]])
-    
 
 
-        # try to identify times by checking if a number is next to 
+# extracting an
+for ind in numIndsArr:
+    print("num", res[ind], res[ind-10:ind+10])
 
 
-    #value = text.split("\n")[6].replace("\t", "").split("R$")[1]
-    #print("text 1:", value)
-    #print("text 2:", )
-
-    # parce te tables separately 
 
 
+# issues:
+# PDFs are sometimes formated in 2 columns -- cannot read "across" the line
+
+
+# new logic:
+# 1) extract all numbers
+# 2) search the substrings for keywords
