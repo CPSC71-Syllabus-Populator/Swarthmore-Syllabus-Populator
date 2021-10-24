@@ -110,10 +110,18 @@ strRes = ''.join(map(str, res))
 par.find_all_regex(main_str=strRes, substr="class")
 
 keyword_inds = par.find_all_regex2(strRes, patterns=keywords)  # now we have all inds
-pairs = sorted(product(numIndsArr, keyword_inds), key=lambda t: abs(t[0]-t[1]))
-for i in range(len(keyword_inds)):
-    currPair = pairs[i]
-    print(currPair, ":", strRes[currPair[0]], strRes[currPair[1]])
+num_inds = par.find_all_nums(strRes)
+
+for k in keyword_inds:
+    print("keyword:", strRes[k[0]:k[1]])
+    curr_num_inds = par.find_all_nums(strRes[k[1]:k[1]+100])
+    curr_times_inds = par.find_am_pm(strRes[k[1]:k[1]+100])
+    # adjust the inds
+    curr_num_inds = [x+k[1] for x in curr_num_inds]
+    curr_times_inds = [x+k[1] for x in curr_times_inds]
+    for ind in curr_num_inds:
+        print(strRes[ind])
+    for ind in curr_times_inds:
+        print(strRes[ind:ind+2])
 
 
-print(par.find_all_nums(strRes))

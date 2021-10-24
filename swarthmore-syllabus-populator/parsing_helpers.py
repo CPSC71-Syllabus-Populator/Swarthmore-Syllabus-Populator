@@ -35,21 +35,29 @@ def find_all_regex2(main_str, patterns):
             match = re.search(pattern, main_str)
             s = match.start()
             e = match.end()
-            print("found", main_str[s:e])
-            #inds.append([s,e])
-            inds.append(s)
+            #print("found", main_str[s:e])
+            inds.append([s,e])
+            #inds.append(s)
     return inds
 
 
 def find_all_nums(main_str):
-    return [int(s) for s in range(len(main_str.split())) if main_str[s].isdigit()]
+    l = len(main_str)
+    return [int(s) for s in range(len(main_str)) if main_str[s].isdigit()]
+
+
+def find_am_pm(main_str):
+    inds = [m.start() for m in re.finditer("am", main_str)]
+    inds += [m.start() for m in re.finditer("pm", main_str)]
+    return inds
 
 
 
-str, substr = 'MondayisthefirstdayMonday','Mon'
+str, substr = 'MondayiamsthpmefiramstdayMonday','Mon'
 find_all_regex(str, substr)
 
 # regex = re.compile(r'\b(' + '|'.join(pattern) + r')\b')
 
 keywords = ["OH", "office", "hours", "meeting", "class", "sessions",
 "sessions", "drop-in"]
+print("am/pm", find_am_pm(str))
