@@ -8,7 +8,6 @@ import re
 from itertools import product
 import parsing_helpers as par
 
-
 # the difference between input() and sys.stdin.readline() is that the former doesn't
 # read the escape char but we don't need it here 
 
@@ -86,31 +85,35 @@ for ind, el in enumerate(res):
         foundKeywords.append(el)
         keywordIndsArr.append(ind)
 
+
 print("{} nums extracted: {}".format(len(numsArr), numsArr))
 print("{} weekdays extracted: {}".format(len(weekDaysArr), weekDaysArr))
 print("{} keywords extracted: {}".format(len(keywordIndsArr), foundKeywords))
 
 
-print("the closest matching pairs are")
-pairs = sorted(product(numIndsArr, keywordIndsArr), key=lambda t: abs(t[0]-t[1]))
+# ATTEMPT 2: extract the keywords and numbers are the located the closest to each other
+# in the list of words
+#print("the closest matching pairs are")
+#pairs = sorted(product(numIndsArr, keywordIndsArr), key=lambda t: abs(t[0]-t[1]))
+#for i in range(len(keywordIndsArr)):
+#    currPair = pairs[i]
+#    print(currPair, ":", res[currPair[0]], res[currPair[1]])
 
 
-for i in range(len(keywordIndsArr)):
-    currPair = pairs[i]
-    print(currPair, ":", res[currPair[0]], res[currPair[1]])
-
-
-# extracting an
-for ind in numIndsArr:
-    print("num", res[ind], res[ind-10:ind+10])
-
-
-
+# ATTEMPT 3: extracting an words before and after
+#for ind in numIndsArr:
+#    print("num", res[ind], res[ind-10:ind+10])
 
 # issues:
 # PDFs are sometimes formated in 2 columns -- cannot read "across" the line
 
+# ATTEMPT 5:
+# new logic:  1) extract all numbers  2) search the substrings for keywords
 
-# new logic:
-# 1) extract all numbers
-# 2) search the substrings for keywords
+
+
+# create a long string from the result
+strRes = ''.join(map(str, res))
+par.find_all_regex(main_str=strRes, substr="class")
+
+par.find_all_regex2(strRes, patterns=keywords)
