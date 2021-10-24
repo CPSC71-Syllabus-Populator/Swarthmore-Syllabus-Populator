@@ -40,13 +40,6 @@ if filename.endswith('.pdf'):
                 single_page_text = pdf_page.extract_text()
                 # separate each page's text with newline
                 all_text = all_text + '\n' + single_page_text
-# first_page = syll.pages[0]
-
-# for line  7th line (ind 6) .replace('old parameter', 'new parameter')
-# then split use .split() it will separate the text from the parameter we pass.
-# value = text.split("\n")[6].replace("\t", "").split("R$")[1]
-
-# extract all dates and days of the week
 
 
 
@@ -116,4 +109,11 @@ print("{} keywords extracted: {}".format(len(keywordIndsArr), foundKeywords))
 strRes = ''.join(map(str, res))
 par.find_all_regex(main_str=strRes, substr="class")
 
-par.find_all_regex2(strRes, patterns=keywords)
+keyword_inds = par.find_all_regex2(strRes, patterns=keywords)  # now we have all inds
+pairs = sorted(product(numIndsArr, keyword_inds), key=lambda t: abs(t[0]-t[1]))
+for i in range(len(keyword_inds)):
+    currPair = pairs[i]
+    print(currPair, ":", strRes[currPair[0]], strRes[currPair[1]])
+
+
+print(par.find_all_nums(strRes))

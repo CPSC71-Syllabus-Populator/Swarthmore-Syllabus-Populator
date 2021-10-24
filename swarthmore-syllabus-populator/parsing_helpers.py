@@ -36,9 +36,13 @@ def find_all_regex2(main_str, patterns):
             s = match.start()
             e = match.end()
             print("found", main_str[s:e])
-            inds.append([s,e])
+            #inds.append([s,e])
+            inds.append(s)
     return inds
 
+
+def find_all_nums(main_str):
+    return [int(s) for s in range(len(main_str.split())) if main_str[s].isdigit()]
 
 
 
