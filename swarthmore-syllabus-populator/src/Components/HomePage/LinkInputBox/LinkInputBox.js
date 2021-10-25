@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const LinkInputBox = () => {
     const [link, setLink] = useState("");
@@ -18,30 +18,19 @@ const LinkInputBox = () => {
             />
             <button
                 onClick={async () => {
+                const data = new FormData();
+                data.append("link", link);
 
-                    fetch(`/link_test`,{
-                        'method':'POST',
-                        headers : {
-                            'Content-Type':'application/json'
-                        },
-                        body:JSON.stringify(link)
-                    })
-                        .then(response => response.json())
-                        .catch(error => console.log(error))
+                const response = await fetch("/send_link", {
+                    method: "POST",
+                    body: data,
+                });
+                if (response.ok) {
+                    console.log("request succeeded");
+                } else {
+                    console.error("request failed");
                     }
-                // const data = new FormData();
-                // data.append("link", link);
-
-                // const response = await fetch("/link_test", {
-                //     method: "POST",
-                //     body: data,
-                // });
-                // if (response.ok) {
-                //     console.log("request succeeded");
-                // } else {
-                //     console.error("request failed");
-                // }
-                }
+                }}
             >
                 Submit link
             </button>

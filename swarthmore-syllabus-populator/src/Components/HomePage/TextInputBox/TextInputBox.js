@@ -1,25 +1,8 @@
 import React from 'react';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const TextInputBox = () => {
-    const [text, setText] = useState("");
-    
-    const handleChange = (e) => {
-        const target = e.target;
-        //const name = target.name;
-        const value = target.value;
-
-        setText(value);
-    }
-
-    useEffect(() => {
-        console.log(text);
-    }, [text]);
-
-    const resetField = () => {
-        setText("");
-    }
-    
+    const [text, setText] = useState("");    
 
     return (
         <div>
@@ -30,14 +13,29 @@ const TextInputBox = () => {
                 rows="4"
                 cols="50"
                 value={text}
-                onChange={handleChange}
-            />
-            <input
-                type="submit"
-                value="Submit"
-                onClick={resetField}
+                onChange={(e) => {
+                    setText(e.target.value);
+                }}
             />
 
+            <button
+            onClick={async () => {
+                const data = new FormData();
+                data.append("text", text);
+
+                const response = await fetch("/send_text", {
+                method: "POST",
+                body: data,
+                });
+                if (response.ok) {
+                console.log("request succeeded");
+                } else {
+                console.error("request failed");
+                }
+            }}
+            >
+            Parse Syllabus
+            </button>
         </div>
     )
 }

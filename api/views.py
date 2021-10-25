@@ -25,15 +25,17 @@ def parse_pdf():
     return 'Parsed', 201
 
 
-@main.route('/link_test', methods=['POST'])
-def link_test():
+@main.route('/send_link', methods=['POST'])
+def send_link():
+    link = request.form['link']
+    print(link)
 
-    body = request.json['link']
-    print(body)
-    # # link = request.json
-    # # print(link)
-    # # my_json = request.get_json()
-    # # link = my_json.get('link')
-    print("Good function")
+    return 'Link received', 201
 
-    return 'Linktest', 201
+
+@main.route('/send_text', methods=['POST'])
+def send_text():
+    link = request.form['text']
+    print(link)
+
+    return 'Text received', 201
