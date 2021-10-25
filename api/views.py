@@ -27,9 +27,13 @@ def parse_pdf():
 
 @main.route('/link_test', methods=['POST'])
 def link_test():
-    link_json = request.get_json()
 
-    link = link_json.get('link')
-    print(link)
+    body = request.json['link']
+    print(body)
+    # # link = request.json
+    # # print(link)
+    # # my_json = request.get_json()
+    # # link = my_json.get('link')
+    print("Good function")
 
     return 'Linktest', 201
