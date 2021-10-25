@@ -57,16 +57,12 @@ numIndsArr = []
 keywordIndsArr = []
 weekdayIndsArr = []
 
-
-#for page_ind, page in enumerate(syll.pages):
-#    text = page.extract_text()
 #    # Splitting characters in String by ',' OR '_', OR '-', OR ... etc
-res = re.split(', |_|-|\n| |%|. |\t', all_text)
+#res = re.split(', |_|-|\n| |%|. |\t', all_text)
 res = re.split(' |\n', all_text)
 res = list(filter(None, res))   #remove empty spaces from the list of words that were parced
 
 
-#print(res) print all words
 for ind, el in enumerate(res):
     if el.isdigit():
         numsArr.append(el)
@@ -107,12 +103,11 @@ print("{} keywords extracted: {}".format(len(keywordIndsArr), foundKeywords))
 
 # create a long string from the result
 strRes = ''.join(map(str, res))
-par.find_all_regex(main_str=strRes, substr="class")
-
-keyword_inds = par.find_all_regex2(strRes, patterns=keywords)  # now we have all inds
+# par.find_all_regex(main_str=strRes, substr="class")  # this will return inds where the word "class" occurs
+keyword_inds = par.find_all_regex(main_str=strRes, patterns=keywords)  # returns inds of all keywords
 num_inds = par.find_all_nums(strRes)
 
-for k in keyword_inds:
+for k in keyword_inds:  #attempting to match keywords and numbers
     print("keyword:", strRes[k[0]:k[1]])
     curr_num_inds = par.find_all_nums(strRes[k[1]:k[1]+100])
     curr_times_inds = par.find_am_pm(strRes[k[1]:k[1]+100])

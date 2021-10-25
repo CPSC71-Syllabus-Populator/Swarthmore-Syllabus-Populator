@@ -14,20 +14,17 @@ list(find_all('spam spam spam spam', 'spam')) # [0, 5, 10, 15]
 
 
 # an alternative implementation using Regex
-def find_all_regex(main_str, substr):
+def find_word_regex(main_str, substr):
     substr = substr.lower()
     main_str = main_str.lower()
     #regex = re.compile(r'\b(' + '|'.join(pattern) + r')\b')
 
     inds = [m.start() for m in re.finditer(substr, main_str)]
-
-    print("here inds", inds)
-    for ind in inds:
-        print(main_str[ind:ind+len(substr)])
+    return inds
 
 
 # this function
-def find_all_regex2(main_str, patterns):
+def find_all_regex(main_str, patterns):
     main_str = main_str.lower()
     inds = []
     for pattern in patterns:
@@ -43,7 +40,29 @@ def find_all_regex2(main_str, patterns):
 
 def find_all_nums(main_str):
     l = len(main_str)
-    return [int(s) for s in range(len(main_str)) if main_str[s].isdigit()]
+    ind_arr = [int(s) for s in range(len(main_str)) if main_str[s].isdigit()]
+    new_ind_arr = []
+    # combine the inds for numbers with more than one digit
+    i=0
+    for i in range(len(ind_arr)-1):
+        s = ind_arr[i]
+        e = ind_arr[i]
+
+        print("s i", s)
+        for j in range(i,len(ind_arr)-1):
+            if j<len(ind_arr)-1 and ind_arr[j+1]-ind_arr[j]==1:
+                e=ind_arr[j+1]+1
+                j+=1
+            else:
+                pass
+            i=j
+        if s!=e:
+            new_ind_arr.append([s,e])
+    return new_ind_arr
+
+
+
+
 
 
 def find_am_pm(main_str):
@@ -53,11 +72,15 @@ def find_am_pm(main_str):
 
 
 
-str, substr = 'MondayiamsthpmefiramstdayMonday','Mon'
-find_all_regex(str, substr)
+main_str, substr = 'Monday100iamsthpe800mefiramst200dayMond00ay11','Mon'
+find_word_regex(main_str, substr)
 
 # regex = re.compile(r'\b(' + '|'.join(pattern) + r')\b')
 
 keywords = ["OH", "office", "hours", "meeting", "class", "sessions",
 "sessions", "drop-in"]
-print("am/pm", find_am_pm(str))
+print("am/pm", find_am_pm(main_str))
+
+num_inds = find_all_nums(main_str)
+for i in num_inds:
+    print(main_str[i[0]:i[1]])
