@@ -9,8 +9,7 @@ from itertools import product
 import parsing_helpers as par
 
 # the difference between input() and sys.stdin.readline() is that the former doesn't
-# read the escape char but we don't need it here 
-
+# read the escape char but we don't need it here
 #filename = input("please enter the file name: ")  # TODO uncomment
 
 filename = '/Users/Arina/Desktop/Swarthmore-Syllabus-Populator/sample-syllabi/M34Fall_2019syll.pdf'
@@ -57,12 +56,11 @@ numIndsArr = []
 keywordIndsArr = []
 weekdayIndsArr = []
 
-#    # Splitting characters in String by ',' OR '_', OR '-', OR ... etc
-#res = re.split(', |_|-|\n| |%|. |\t', all_text)
+# Splitting characters in String by ',' OR '_', OR '-', OR ... etc
 res = re.split(' |\n', all_text)
-res = list(filter(None, res))   #remove empty spaces from the list of words that were parced
+res = list(filter(None, res))   # remove empty spaces from the list of words that were parced
 
-
+""" 
 for ind, el in enumerate(res):
     if el.isdigit():
         numsArr.append(el)
@@ -79,6 +77,7 @@ print("{} nums extracted: {}".format(len(numsArr), numsArr))
 print("{} weekdays extracted: {}".format(len(weekDaysArr), weekDaysArr))
 print("{} keywords extracted: {}".format(len(keywordIndsArr), foundKeywords))
 
+"""
 
 # ATTEMPT 2: extract the keywords and numbers are the located the closest to each other
 # in the list of words
@@ -107,16 +106,18 @@ strRes = ''.join(map(str, res))
 keyword_inds = par.find_all_regex(main_str=strRes, patterns=keywords)  # returns inds of all keywords
 num_inds = par.find_all_nums(strRes)
 
-for k in keyword_inds:  #attempting to match keywords and numbers
-    print("keyword:", strRes[k[0]:k[1]])
-    curr_num_inds = par.find_all_nums(strRes[k[1]:k[1]+100])
-    curr_times_inds = par.find_am_pm(strRes[k[1]:k[1]+100])
+for k in keyword_inds:  # attempting to match keywords and numbers
+    print("keyword:", strRes[k[0]:k[1]])  # k==index of the last letter of the keyword
+    curr_num_inds = par.find_all_nums(strRes[k[1]:k[1]+150])
+    curr_times_inds = par.find_am_pm(strRes[k[1]:k[1]+150])
     # adjust the inds
-    curr_num_inds = [x+k[1] for x in curr_num_inds]
+    curr_num_inds_s = [x[0]+k[1] for x in curr_num_inds]
+    curr_num_inds_e = [x[1]+k[1] for x in curr_num_inds]
     curr_times_inds = [x+k[1] for x in curr_times_inds]
-    for ind in curr_num_inds:
-        print(strRes[ind])
-    for ind in curr_times_inds:
+    print("matching dates/times")
+    for s, e in zip(curr_num_inds_s, curr_num_inds_e):
+        print(strRes[s:e])
+    for ind in set(curr_times_inds):
         print(strRes[ind:ind+2])
 
 
