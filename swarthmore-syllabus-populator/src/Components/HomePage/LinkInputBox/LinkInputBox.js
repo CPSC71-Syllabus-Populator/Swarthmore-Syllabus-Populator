@@ -1,24 +1,8 @@
 import React from 'react';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const LinkInputBox = () => {
     const [link, setLink] = useState("");
-    
-    const handleChange = (e) => {
-        const target = e.target;
-        //const name = target.name;
-        const value = target.value;
-
-        setLink(value);
-    }
-
-    useEffect(() => {
-        console.log(link);
-    }, [link]);
-
-    const resetField = () => {
-        setLink("");
-    }
 
     return (
         <div>
@@ -27,15 +11,48 @@ const LinkInputBox = () => {
                 name="link"
                 placeholder="Paste link here"
                 value={link}
-                onChange={handleChange}
+                onChange={(e) => {
+                    setLink(e.target.value);
+                }}
+                // onChange={handleChange}
             />
-            <input
-                type="submit"
-                value="Submit"
-                onClick={resetField}
-            />
+            <button
+                onClick={async () => {
+                const data = new FormData();
+                data.append("link", link);
+
+                const response = await fetch("/send_link", {
+                    method: "POST",
+                    body: data,
+                });
+                if (response.ok) {
+                    console.log("request succeeded");
+                } else {
+                    console.error("request failed");
+                    }
+                }}
+            >
+                Submit link
+            </button>
+            {link}
         </div>
     )
 }
 
 export default LinkInputBox
+
+    // const handleChange = (e) => {
+    //     const target = e.target;
+    //     //const name = target.name;
+    //     const value = target.value;
+
+    //     setLink(value);
+    // }
+
+    // useEffect(() => {
+    //     console.log(link);
+    // }, [link]);
+
+    // const resetField = () => {
+    //     setLink("");
+    // }
