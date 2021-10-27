@@ -1,8 +1,10 @@
 import React from 'react';
 import { useState } from "react";
+import { useHistory } from 'react-router-dom'
 
 const TextInputBox = () => {
     const [text, setText] = useState("");    
+    const history = useHistory();
 
     return (
         <div>
@@ -32,6 +34,7 @@ const TextInputBox = () => {
                 } else {
                 console.error("request failed");
                 }
+                history.push('/events')
             }}
             >
             Parse Syllabus

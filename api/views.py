@@ -39,3 +39,10 @@ def send_text():
     print(link)
 
     return 'Text received', 201
+
+
+@main.route('/send_text', methods=['GET'])
+def get_test():
+    data = 'Data'
+
+    return data, 201
