@@ -41,8 +41,9 @@ def send_text():
     return 'Text received', 201
 
 
-@main.route('/send_text', methods=['GET'])
-def get_test():
+@main.route('/get_events', methods=['GET'])
+def get_events():
+    print('Running this')
     data = 'Data'
 
     return data, 201

@@ -5,9 +5,10 @@ const Events = () => {
     const [todos, setTodos] = useState('Current state');
 
     useEffect(() => {
-        fetch('/get_test')
+        console.log("Testing")
+        fetch('/get_events')
           .then((response) => response.json())
-          .then((data) => console.log(data));
+          .then((data) => console.log('Here'));
       }, []);
     
 
