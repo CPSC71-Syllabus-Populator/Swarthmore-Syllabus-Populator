@@ -5,18 +5,16 @@
 
 import pdfplumber
 import re
-
+from itertools import product
+import parsing_helpers as par
 
 # the difference between input() and sys.stdin.readline() is that the former doesn't
-# read the escape char but we don't need it here 
-
-
-
-
+# read the escape char but we don't need it here
 #filename = input("please enter the file name: ")  # TODO uncomment
 
 filename = '/Users/Arina/Desktop/Swarthmore-Syllabus-Populator/sample-syllabi/M34Fall_2019syll.pdf'
-
+filename = '/Users/Arina/Desktop/Swarthmore-Syllabus-Populator/sample-syllabi/Popular Myths Syllabus.pdf'
+filename = '/Users/Arina/Desktop/Swarthmore-Syllabus-Populator/sample-syllabi/MATH027.pdf'
 """ 
 with pdfplumber.open(filename) as pdf:   # open method returns a pdfplumber.PDF obj
     pages = pdf.pages   # list of pages 
@@ -27,53 +25,99 @@ with pdfplumber.open(filename) as pdf:   # open method returns a pdfplumber.PDF 
     print("ROWS:\n", first_page_text)
 
 """
-#first_page= pages[0].extract_text()
-#print("ALL:\n", first_page_rows)
 
-# /Users/arina/Desktop/Swarthmore-Syllabus-Populator/swarthmore-syllabus-populator
-
-
+#cd /Users/arina/Desktop/Swarthmore-Syllabus-Populator/swarthmore-syllabus-populator
 
 syll = pdfplumber.open(filename)
-# first_page = syll.pages[0]
 
-# for line  7th line (ind 6) .replace('old parameter', 'new parameter')
-# then split use .split() it will separate the text from the parameter we pass.
-# value = text.split("\n")[6].replace("\t", "").split("R$")[1]
+if filename.endswith('.pdf'):
+    all_text = '' # new line
+    with pdfplumber.open(filename) as pdf:
+            # page = pdf.pages[0] - comment out or remove line
+            # text = page.extract_text() - comment out or remove line
+            for pdf_page in pdf.pages:
+                single_page_text = pdf_page.extract_text()
+                # separate each page's text with newline
+                all_text = all_text + '\n' + single_page_text
 
-# extract all dates and days of the week
-weekDays = set(["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday", 
-"Mon", "Tue","Wed","Thu","Thur","Fri","Sat","Sun", "MWF", "TTH"])
+
+
+keywords = ["OH", "office", "hours", "meeting", "class", "sessions",
+"sessions", "drop-in"]
+
+weekDays = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday",
+"mon", "tue","wed","thu","thur","fri","sat","sun", "mwt", "tth", "mondays","tuesdays","wednesdays","thursdays","fridays","saturdays","sundays"]
 
 weekDaysArr = []
+numsArr = []
+foundKeywords = []
+
+numIndsArr = []
+keywordIndsArr = []
+weekdayIndsArr = []
+
+# Splitting characters in String by ',' OR '_', OR '-', OR ... etc
+res = re.split(' |\n', all_text)
+res = list(filter(None, res))   # remove empty spaces from the list of words that were parced
+
+""" 
+for ind, el in enumerate(res):
+    if el.isdigit():
+        numsArr.append(el)
+        numIndsArr.append(ind)
+    elif el.lower() in weekDays:
+        weekDaysArr.append(el)
+        weekdayIndsArr.append(ind)
+    elif el.lower() in keywords:
+        foundKeywords.append(el)
+        keywordIndsArr.append(ind)
+
+
+print("{} nums extracted: {}".format(len(numsArr), numsArr))
+print("{} weekdays extracted: {}".format(len(weekDaysArr), weekDaysArr))
+print("{} keywords extracted: {}".format(len(keywordIndsArr), foundKeywords))
+
+"""
+
+# ATTEMPT 2: extract the keywords and numbers are the located the closest to each other
+# in the list of words
+#print("the closest matching pairs are")
+#pairs = sorted(product(numIndsArr, keywordIndsArr), key=lambda t: abs(t[0]-t[1]))
+#for i in range(len(keywordIndsArr)):
+#    currPair = pairs[i]
+#    print(currPair, ":", res[currPair[0]], res[currPair[1]])
+
+
+# ATTEMPT 3: extracting an words before and after
+#for ind in numIndsArr:
+#    print("num", res[ind], res[ind-10:ind+10])
+
+# issues:
+# PDFs are sometimes formated in 2 columns -- cannot read "across" the line
+
+# ATTEMPT 5:
+# new logic:  1) extract all numbers  2) search the substrings for keywords
 
 
 
-for ind, page in enumerate(syll.pages):
-    text = page.extract_text()
-    # Splitting characters in String by ',' OR '_', OR '-', OR ... etc
-    res = re.split(', |_|-|\n| |%|. |\t', text)
+# create a long string from the result
+strRes = ''.join(map(str, res))
+# par.find_all_regex(main_str=strRes, substr="class")  # this will return inds where the word "class" occurs
+keyword_inds = par.find_all_regex(main_str=strRes, patterns=keywords)  # returns inds of all keywords
+num_inds = par.find_all_nums(strRes)
 
-    numsArr = []
-    for el in res:
-        if el.isdigit():
-            numsArr.append(el)
-        if el in weekDays:
-            weekDaysArr.append(el)
-
-    
-    print("all nums extracted from page {} are: {}".format(ind, numsArr))
-    print("all week days extracted from page {} are: {}".format(ind, weekDaysArr))
-       
-
-
-    # try to identify times by checking if a number is next to 
-
-
-#value = text.split("\n")[6].replace("\t", "").split("R$")[1]
-#print("text 1:", value)
-#print("text 2:", )
-
-# parce te tables separately 
+for k in keyword_inds:  # attempting to match keywords and numbers
+    print("keyword:", strRes[k[0]:k[1]])  # k==index of the last letter of the keyword
+    curr_num_inds = par.find_all_nums(strRes[k[1]:k[1]+150])
+    curr_times_inds = par.find_am_pm(strRes[k[1]:k[1]+150])
+    # adjust the inds
+    curr_num_inds_s = [x[0]+k[1] for x in curr_num_inds]
+    curr_num_inds_e = [x[1]+k[1] for x in curr_num_inds]
+    curr_times_inds = [x+k[1] for x in curr_times_inds]
+    print("matching dates/times")
+    for s, e in zip(curr_num_inds_s, curr_num_inds_e):
+        print(strRes[s:e])
+    for ind in set(curr_times_inds):
+        print(strRes[ind:ind+2])
 
 
