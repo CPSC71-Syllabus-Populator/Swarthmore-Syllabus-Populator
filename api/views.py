@@ -44,6 +44,6 @@ def send_text():
 @main.route('/get_events', methods=['GET'])
 def get_events():
     print('Running this')
-    data = 'Data'
+    data = 'Data7'
 
     return data, 201

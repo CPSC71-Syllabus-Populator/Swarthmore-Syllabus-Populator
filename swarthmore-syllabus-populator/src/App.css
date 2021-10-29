@@ -7,6 +7,18 @@
   pointer-events: none;
 }
 
+.Event {
+  height: 180px;
+  width: 250px;
+  border-style: solid;
+  border-radius: 5%;
+  margin: 25px;
+}
+
+.Option {
+  display: flex;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
