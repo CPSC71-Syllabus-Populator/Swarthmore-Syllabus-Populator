@@ -42,11 +42,11 @@ if filename.endswith('.pdf'):
 
 
 
-keywords = ["OH", "office", "hours", "meeting", "class", "sessions",
-"sessions", "drop-in"]
+keywords = ["OH", "office", "hour", "meeting", "class", "sessions", "drop-in"]
+
 
 weekDays = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday",
-"mon", "tue","wed","thu","thur","fri","sat","sun", "mwt", "tth", "mondays","tuesdays","wednesdays","thursdays","fridays","saturdays","sundays"]
+"mon", "tue","wed","thu","thur","fri","sat","sun", "mwt", "tth"]
 
 weekDaysArr = []
 numsArr = []
@@ -110,14 +110,23 @@ for k in keyword_inds:  # attempting to match keywords and numbers
     print("keyword:", strRes[k[0]:k[1]])  # k==index of the last letter of the keyword
     curr_num_inds = par.find_all_nums(strRes[k[1]:k[1]+150])
     curr_times_inds = par.find_am_pm(strRes[k[1]:k[1]+150])
+    curr_weekday_inds = par.find_all_regex(main_str=strRes[k[1]:k[1]+150], patterns=weekDays)
     # adjust the inds
     curr_num_inds_s = [x[0]+k[1] for x in curr_num_inds]
     curr_num_inds_e = [x[1]+k[1] for x in curr_num_inds]
     curr_times_inds = [x+k[1] for x in curr_times_inds]
+    curr_weekday_inds = [[x[0]+k[1], x[1]+k[1]] for x in curr_weekday_inds]
+
     print("matching dates/times")
     for s, e in zip(curr_num_inds_s, curr_num_inds_e):
         print(strRes[s:e])
     for ind in set(curr_times_inds):
         print(strRes[ind:ind+2])
+    for ind in curr_weekday_inds:
+        print(strRes[ind[0]:ind[1]])
 
 
+
+
+#def is_a_time():
+    # if there is a am/pm keyword after the number
