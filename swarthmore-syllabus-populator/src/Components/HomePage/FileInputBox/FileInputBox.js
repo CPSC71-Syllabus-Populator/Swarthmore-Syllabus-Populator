@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useHistory } from 'react-router-dom';
 
 const FileInputBox = () => {
   const [file, setFile] = useState(null);
+  const history = useHistory();
 
   return (
     <div>
@@ -27,6 +29,7 @@ const FileInputBox = () => {
             } else {
               console.error("request failed");
             }
+            history.push('/events')
           }}
         >
           Parse Syllabus

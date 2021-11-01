@@ -35,9 +35,8 @@ const Events = () => {
     // setEvents(test_events)
 
     useEffect(() => {
-        const response = fetch("/get_events", {
-        method: "GET",
-        });
+        const response = fetch("/get_events");
+        console.log(response)
         if (response.ok) {
         console.log("request succeeded");
         } else {
@@ -46,13 +45,15 @@ const Events = () => {
       }, []);
 
       const displayEvents = () => {
-          return test_events.map((event) => {
-              return (<div className="Option">
+          return test_events.map((event, index) => {
+              return (
+                    <div className="Option">
                         <Event key={event.id} meeting={event.class} 
                         title={event.title} time={event.time}/>
                         <p>Add event?</p>
                         <input type="checkbox" />
-                    </div>)
+                    </div>
+                    )
           })
       }
 

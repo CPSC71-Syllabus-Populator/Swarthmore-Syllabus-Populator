@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from "react";
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 
 const TextInputBox = () => {
     const [text, setText] = useState("");    
@@ -30,9 +30,11 @@ const TextInputBox = () => {
                 body: data,
                 });
                 if (response.ok) {
-                console.log("request succeeded");
+                    console.log('request succeeded');
+                    // console.log(response.bodyUsed);
+                    // console.log(response.data);
                 } else {
-                console.error("request failed");
+                    console.error("request failed");
                 }
                 history.push('/events')
             }}

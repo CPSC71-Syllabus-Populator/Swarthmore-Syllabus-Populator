@@ -1,8 +1,10 @@
 import React from 'react';
 import { useState } from "react";
+import { useHistory } from 'react-router-dom';
 
 const LinkInputBox = () => {
     const [link, setLink] = useState("");
+    const history = useHistory();
 
     return (
         <div>
@@ -18,18 +20,19 @@ const LinkInputBox = () => {
             />
             <button
                 onClick={async () => {
-                const data = new FormData();
-                data.append("link", link);
+                    const data = new FormData();
+                    data.append("link", link);
 
-                const response = await fetch("/send_link", {
-                    method: "POST",
-                    body: data,
-                });
-                if (response.ok) {
-                    console.log("request succeeded");
-                } else {
-                    console.error("request failed");
-                    }
+                    const response = await fetch("/send_link", {
+                        method: "POST",
+                        body: data,
+                    });
+                    if (response.ok) {
+                        console.log("request succeeded");
+                    } else {
+                        console.error("request failed");
+                        }
+                    history.push('/events')
                 }}
             >
                 Submit link

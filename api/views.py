@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, session
 from werkzeug.utils import secure_filename
 import pdfplumber
 import os
@@ -33,17 +33,25 @@ def send_link():
     return 'Link received', 201
 
 
-@main.route('/send_text', methods=['POST'])
+@main.route('/send_text', methods=['POST', 'GET'])
 def send_text():
-    link = request.form['text']
-    print(link)
-
-    return 'Text received', 201
+    if request.method == 'POST':
+        text = request.form['text']
+        print(text)
+        session['text'] = text
+        return text, 201
+    return 'Text not received', 401
 
 
 @main.route('/get_events', methods=['GET'])
 def get_events():
-    print('Running this')
-    data = 'Data7'
+    if request.method == 'GET':
+        data = 'testing this!!!!'
+        return data, 201
 
-    return data, 201
+    return 'Invalid request', 401
+
+
+# @main.route('/testing', methods=['GET'])
+# def testing():
+#     return session['text'], 201
