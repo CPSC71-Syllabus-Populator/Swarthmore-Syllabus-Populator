@@ -3,9 +3,7 @@ import { useState, useEffect} from 'react'
 import Event from "./Event";
 
 const Events = () => {
-    const [events, setEvents] = useState();
-
-    const test_events = [
+    const [events, setEvents] = useState([
         {
             id: 0,
             class: 'CS21',
@@ -30,9 +28,7 @@ const Events = () => {
             title: 'Office Hours',
             time: '5-6pm WF'
         },
-    ]
-
-    // setEvents(test_events)
+    ]);
 
     useEffect(() => {
         const response = fetch("/get_events");
@@ -45,7 +41,7 @@ const Events = () => {
       }, []);
 
       const displayEvents = () => {
-          return test_events.map((event, index) => {
+          return events.map((event) => {
               return (
                     <div className="Option">
                         <Event key={event.id} meeting={event.class} 

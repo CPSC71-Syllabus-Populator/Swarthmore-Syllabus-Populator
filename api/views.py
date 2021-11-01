@@ -38,7 +38,7 @@ def send_text():
     if request.method == 'POST':
         text = request.form['text']
         print(text)
-        session['text'] = text
+        session['content'] = text
         return text, 201
     return 'Text not received', 401
 
@@ -46,8 +46,7 @@ def send_text():
 @main.route('/get_events', methods=['GET'])
 def get_events():
     if request.method == 'GET':
-        data = 'testing this!!!!'
-        return data, 201
+        return session['content'], 201
 
     return 'Invalid request', 401
 

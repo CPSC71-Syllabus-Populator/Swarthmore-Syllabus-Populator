@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Event = ({ id, meeting, title, time }) => {
+const Event = ({ meeting, title, time }) => {
     return (
         <div className='Event'>
             <p>Class: {meeting}</p>
