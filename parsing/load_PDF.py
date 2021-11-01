@@ -42,6 +42,7 @@ def extract_syllabi_text(syllabi):
     return all_text
 
 
+
 def main():
     syllabiPath = get_syllabi_directory_path()
     syllabiFiles = os.listdir(syllabiPath)
