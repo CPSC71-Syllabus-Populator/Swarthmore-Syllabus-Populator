@@ -1,9 +1,8 @@
 import os
 import pdfplumber
-from parse_PDF import parse_text_for_events
+from parse_PDF import parse_text_for_events, create_an_event_list
 import time
 start_time = time.time()
-
 
 def get_syllabi_directory_path():
     # change current directory to the parent
@@ -46,12 +45,11 @@ def extract_syllabi_text(syllabi):
 def main():
     syllabiPath = get_syllabi_directory_path()
     syllabiFiles = os.listdir(syllabiPath)
-
     syllabi = select_syllabi_file(syllabiFiles)
-
     text = extract_syllabi_text(os.path.join(syllabiPath, syllabi))
-
     parse_text_for_events(text)
+    create_an_event_list(text)
+
 
 
 main()

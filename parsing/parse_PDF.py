@@ -32,14 +32,13 @@ def parse_times(text, events):
             events.add(Event(time_indicie))
 
 
-def convert_times(event, text):
+def convert_times(text, event):
     time = text[event.time[0]:event.time[1]]
     s = time.lower()
     if "-" in s:      # check if it's a times range
         s = s.split("-")
     else:
         s = [s]
-
     if len(s)==2:
         if "am" not in s[0] and "pm" not in s[0]:
             if "am" in s[1]:
@@ -52,26 +51,21 @@ def convert_times(event, text):
             t=t.replace("pm"," ")
             if ":" not in t:
                 t += ":00"
-            t= t.split(":")
+            t = t.split(":")
 
             if t[0] != '12':
                 t[0]=str(int(t[0])+12)
                 s[ind] = (":").join(t)
         elif "am" in t:
-            t = t.replace("am"," ")
+            t = t.replace("am", " ")
             if ":" not in s:
                 t = t + ":00"
             t= t.split(":")
             if t[0] == '12':
                 t[0]='00'
                 s[ind] = (":").join(t)
-    print(s)
-    return s
+    return "-".join(s)
             
-    
-
-
-
 
 def parse_titles(text, events):
     pattern = re.compile(
@@ -98,16 +92,12 @@ def parse_weekdays(text, events):
 
     for event in events:
         s, e = event.time
-
         matches = pattern.finditer(text)
-
         best_dist = float('inf')
-        print(event)
         for match in matches:
             (ms, me) = match.span()
             if abs(s - me) > 550 or abs(e - ms) > 550:
                 continue
-            print(match)
             if (s - ms) < best_dist:
                 event.set_weekday((ms, me))
         print("\n\n")
@@ -116,19 +106,19 @@ def parse_weekdays(text, events):
 def parse_text_for_events(text):
     events = set()
     parse_times(text, events)
-   
     parse_titles(text, events)
     parse_weekdays(text, events)
 
     for event in events:
         title = event.title
-        time = event.time
         wd = event.weekday
-
         print(text[title[0]:title[1]])
-        print(time, text[time[0]:time[1]])
+        # print(time, text[time[0]:time[1]])
+        print(convert_times(text, event))  # this will print the time
         print(text[wd[0]:wd[1]])
         print("")
+
+
 
 
 
@@ -148,16 +138,23 @@ def create_an_event_list(text):
     parse_titles(text, events)
     parse_weekdays(text, events)
 
-    events_list = []
-    for event in events:
-        #event_dict = {"course name": TODO}
-        # TODO : CHENGE EVENT TITLE TO EVENT CLASS
-        
-        event_dict = {"course name": TODO}
+    events_list = []  # a list of events (each event is a dictionary)
 
-        title = event.title
-        time = event.time
-        wd = event.weekday
+    for event in events:
+        event_dict = {}
+        event_dict["event title"] = text[event.title[0]:event.title[1]]
+        event_dict["time"] = convert_times(text, event)
+        event_dict["weekday"] = text[event.weekday[0]:event.weekday[1]]
+        # TODO: event_dict["course name"] =
+        # TODO: event_dict["event class"] = event.title
+        # TODO: event_dict["date"] = event.date
+        # TODO: event_dict["location"] = event.location
+        events_list.append(event_dict)
+
+    print(events_list)
+
+
+
 
 
 
