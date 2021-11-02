@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  padding-left: 150px;
+
+  .input_buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin-right: 50px;
+    height: 200px;
+  }
+
+  .button2 {
+  }
+}
