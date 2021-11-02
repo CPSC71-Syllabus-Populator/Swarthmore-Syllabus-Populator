@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import Style from "./FileInputBox.module.scss";
 
 const FileInputBox = () => {
   const [file, setFile] = useState(null);
@@ -7,8 +8,9 @@ const FileInputBox = () => {
 
   return (
     <div>
-      <form>
+      <form class={Style.form}>
         <input
+          class={Style.input}
           type="file"
           name="file"
           onChange={(e) => {
@@ -16,6 +18,7 @@ const FileInputBox = () => {
           }}
         />
         <button
+          class={Style.button}
           onClick={async () => {
             const data = new FormData();
             data.append("file", file);
@@ -29,7 +32,7 @@ const FileInputBox = () => {
             } else {
               console.error("request failed");
             }
-            history.push('/events')
+            history.push("/events");
           }}
         >
           Parse Syllabus

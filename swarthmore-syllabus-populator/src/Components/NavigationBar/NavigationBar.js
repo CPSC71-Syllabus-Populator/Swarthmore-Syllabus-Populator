@@ -1,13 +1,12 @@
-import React from 'react'
-import NavigationBarCSS from "./style.module.css"
+import React from "react";
+import Style from "./style.module.scss";
 
 export const NavigationBar = () => {
-    return (
-        <div className={NavigationBarCSS.container}>
-            <h1> Swarthmore Calendar Syllabus Populator </h1>
-            
-        </div>
-    )
-}
+  return (
+    <div className={Style.container}>
+      <h1> Swarthmore Calendar Syllabus Populator </h1>
+    </div>
+  );
+};
 
 export default NavigationBar;

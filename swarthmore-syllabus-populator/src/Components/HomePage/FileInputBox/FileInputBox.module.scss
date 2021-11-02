@@ -1,0 +1,23 @@
+$primary-color: rgba(112, 38, 50, 1);
+$secondary-color: rgba(145, 47, 64, 1);
+$background-color: rgba(237, 212, 178, 1);
+$text-color: rgba(251, 251, 251, 1);
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+  .input {
+    background-color: $background-color;
+    height: 400px;
+    width: 600px;
+  }
+
+  .button {
+    margin-top: 30px;
+    border-style: none;
+    border-radius: 5px;
+    width: 200px;
+    height: 25px;
+  }
+}
