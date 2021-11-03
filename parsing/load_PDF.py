@@ -49,11 +49,12 @@ def main():
     text = extract_syllabi_text(os.path.join(syllabiPath, syllabi))
     parse_text_for_events(text)
     create_an_event_list(text)
+    print("The dictionary of the events extracted from the file:", create_an_event_list(text))
 
 
 
 main()
-print("--- %s seconds ---" % (time.time() - start_time))
+#print("--- %s seconds ---" % (time.time() - start_time))
 
 
 # keywords = ["OH", "office", "hour", "meeting", "class", "sessions", "drop-in"]

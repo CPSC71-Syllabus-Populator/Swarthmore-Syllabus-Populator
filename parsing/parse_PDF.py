@@ -72,9 +72,7 @@ def parse_titles(text, events):
         r'\b(office hours|math clinic|class|meeting|meet|session)', re.IGNORECASE)
     for event in events:
         s, e = event.time
-
         matches = pattern.finditer(text[0:e])
-
         best_dist = float('inf')
         for match in matches:
             (ms, me) = match.span()
@@ -82,6 +80,17 @@ def parse_titles(text, events):
                 event.set_title((ms, me))
     
 
+def parse_cathegorize_titles(text, events):
+    oh_pattern = re.compile(
+        r'\b(office hours|oh|class|meeting|meet|session)', re.IGNORECASE)
+    for event in events:
+        s, e = event.time  # get the time associated with the event
+        matches = oh_pattern.finditer(text[0:e])
+        best_dist = float('inf')
+        for match in matches:
+            (ms, me) = match.span()
+            if (s - me) < best_dist:
+                event.set_title((ms, me))   # (ms, me) are the indices
 
 
 def parse_weekdays(text, events):
@@ -89,7 +98,6 @@ def parse_weekdays(text, events):
         r'\b(monday|mon|tuesday|tues|wednesday|wed|thursday|thurs|friday|fri)',
         re.IGNORECASE
     )
-
     for event in events:
         s, e = event.time
         matches = pattern.finditer(text)
@@ -144,14 +152,14 @@ def create_an_event_list(text):
         event_dict = {}
         event_dict["event title"] = text[event.title[0]:event.title[1]]
         event_dict["time"] = convert_times(text, event)
-        event_dict["weekday"] = text[event.weekday[0]:event.weekday[1]]
+        event_dict["day of the week"] = text[event.weekday[0]:event.weekday[1]]
         # TODO: event_dict["course name"] =
         # TODO: event_dict["event class"] = event.title
         # TODO: event_dict["date"] = event.date
         # TODO: event_dict["location"] = event.location
         events_list.append(event_dict)
-
-    print(events_list)
+    return events_list
+    #print(events_list)
 
 
 
