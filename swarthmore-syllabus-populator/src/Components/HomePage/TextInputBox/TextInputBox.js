@@ -1,48 +1,26 @@
-import React from 'react';
+import React from "react";
 import { useState } from "react";
-import { useHistory } from 'react-router-dom';
+import Style from "./TextInputBox.module.scss";
 
 const TextInputBox = () => {
-    const [text, setText] = useState("");    
-    const history = useHistory();
+  const [text, setText] = useState("");
 
-    return (
-        <div>
-            <textarea
-                type="text"
-                name="text"
-                placeholder="Paste text here"
-                rows="4"
-                cols="50"
-                value={text}
-                onChange={(e) => {
-                    setText(e.target.value);
-                }}
-            />
+  return (
+    <div class={Style.container}>
+      <textarea
+        class={Style.input}
+        type="text"
+        name="text"
+        placeholder="Paste text here"
+        rows="4"
+        cols="50"
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+        }}
+      />
+    </div>
+  );
+};
 
-            <button
-            onClick={async () => {
-                const data = new FormData();
-                data.append("text", text);
-
-                const response = await fetch("/send_text", {
-                method: "POST",
-                body: data,
-                });
-                if (response.ok) {
-                    console.log('request succeeded');
-                    // console.log(response.bodyUsed);
-                    // console.log(response.data);
-                } else {
-                    console.error("request failed");
-                }
-                history.push('/events')
-            }}
-            >
-            Parse Syllabus
-            </button>
-        </div>
-    )
-}
-
-export default TextInputBox
+export default TextInputBox;
