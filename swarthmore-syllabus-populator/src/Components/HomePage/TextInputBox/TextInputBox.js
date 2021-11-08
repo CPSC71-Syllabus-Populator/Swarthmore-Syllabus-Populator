@@ -19,6 +19,26 @@ const TextInputBox = () => {
           setText(e.target.value);
         }}
       />
+      <button
+        class={Style.parse_button}
+        onClick={async () => {
+          const data = new FormData();
+          data.append("text", text);
+
+          const response = await fetch("/parse_text", {
+            method: "POST",
+            body: data,
+          });
+
+          if (response.ok) {
+            console.log("/parse_text post request succeeded");
+          } else {
+            console.error("/parse_text post request failed");
+          }
+        }}
+      >
+        <span> Parse Text </span>
+      </button>
     </div>
   );
 };
