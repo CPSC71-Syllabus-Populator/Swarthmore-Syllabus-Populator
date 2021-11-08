@@ -1,0 +1,62 @@
+$primary-color: rgba(112, 38, 50, 1);
+$secondary-color: rgba(145, 47, 64, 1);
+$background-color: rgba(237, 212, 178, 1);
+$text-color: rgba(251, 251, 251, 1);
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+  align-items: center;
+
+  .input {
+    display: flex;
+
+    .input_left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      margin-right: 50px;
+      height: 200px;
+    }
+
+    .input_right {
+      .parse_button {
+        background-color: $secondary-color;
+        margin-top: 25px;
+        width: 200px;
+        height: 30px;
+        border-style: none;
+        border-radius: 4px;
+        color: $text-color;
+        font-family: AirbnbCereal-Medium;
+        font-size: 12pt;
+      }
+
+      .parse_button span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+      }
+
+      .parse_button span:after {
+        content: "\00bb";
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+      }
+
+      .parse_button:hover span {
+        padding-right: 15px;
+      }
+
+      .parse_button:hover span:after {
+        opacity: 1;
+        right: 0;
+      }
+    }
+  }
+}

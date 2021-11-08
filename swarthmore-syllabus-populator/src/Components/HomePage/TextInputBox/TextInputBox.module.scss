@@ -1,0 +1,14 @@
+$primary-color: rgba(112, 38, 50, 1);
+$secondary-color: rgba(145, 47, 64, 1);
+$background-color: rgba(237, 212, 178, 1);
+$text-color: rgba(251, 251, 251, 1);
+
+.input {
+  padding: 20px;
+  resize: none;
+  border-style: dashed;
+  border-radius: 2px;
+  border-width: 2px;
+  border-color: $primary-color;
+  outline: "none";
+}
