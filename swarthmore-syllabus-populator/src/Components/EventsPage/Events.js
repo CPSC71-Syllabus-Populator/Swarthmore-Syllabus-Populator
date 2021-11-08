@@ -31,14 +31,26 @@ const Events = () => {
     ]);
 
     useEffect(() => {
-        const response = fetch("/get_events");
-        console.log(response)
-        if (response.ok) {
-        console.log("request succeeded");
-        } else {
-        console.error("request failed");
-        }
-      }, []);
+        console.log("fetching events");
+        fetch('/get_events', {
+         headers : { 
+         'Content-Type': 'application/json',
+         'Accept': 'application/json'
+           }
+        })
+        .then((response) => {console.log(response);})
+        //  .then((messages) => {console.log("messages");})
+        }, []);
+
+    // useEffect(() => {
+    //     const response = fetch("/get_events");
+    //     console.log(response)
+    //     if (response.ok) {
+    //     console.log("request succeeded");
+    //     } else {
+    //     console.error("request failed");
+    //     }
+    //   }, []);
 
       const displayEvents = () => {
           return events.map((event) => {

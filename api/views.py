@@ -1,7 +1,9 @@
 from flask import Blueprint, request, session
+from flask.wrappers import Response
 from werkzeug.utils import secure_filename
 import pdfplumber
 import os
+import json
 
 UPLOAD_FOLDER = "./".join(["./uploads"])
 
@@ -33,20 +35,22 @@ def send_link():
     return 'Link received', 201
 
 
-@main.route('/send_text', methods=['POST', 'GET'])
+@main.route('/send_text', methods=['POST'])
 def send_text():
     if request.method == 'POST':
         text = request.form['text']
-        print(text)
         session['content'] = text
-        return text, 201
+        print(session['content'])
+        return 'Text received', 201
     return 'Text not received', 401
 
 
 @main.route('/get_events', methods=['GET'])
 def get_events():
     if request.method == 'GET':
-        return session['content'], 201
+        print('Sending content to client')
+        # my_events = getEvents(session['content'])
+        return Response({'data': session['content']}), 201
 
     return 'Invalid request', 401
 
