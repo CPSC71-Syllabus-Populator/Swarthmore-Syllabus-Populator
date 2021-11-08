@@ -134,8 +134,8 @@ def parse_weekdays(text, events):
             if abs(s - me) > 550 or abs(e - ms) > 550:
                 continue
             if (s - ms) < best_dist:
-                event.set_weekday((ms, me))
-        print("\n\n")
+                event.set_weekday = text[ms:me]
+        #print("\n")
 
 
 def parse_text_for_events(text):
@@ -143,15 +143,12 @@ def parse_text_for_events(text):
     parse_times(text, events)
     parse_cathegorize_titles(text, events)
     parse_weekdays(text, events)
-    
 
     for event in events:
         title = event.title
-        wd = event.weekday
-        print(text[title[0]:title[1]])
-        print(convert_times(text, event))  # this will print the time
-        print(text[wd[0]:wd[1]])
-        print("")
+        #print(text[title[0]:title[1]])
+        #print(convert_times(text, event))  # this will print the time
+        #print("")
 
 
 
@@ -159,21 +156,19 @@ def parse_text_for_events(text):
 
 
 """
-This function returns a list of event objects, each containing
-1+++ COURSE NUMBER/NAME 
+This function returns a list of event dictionaries, each containing
 1) Event class (course meeting times, OH, help sessions)
-2) Event location  (if available)
 3) Date of the event (if available)
 4) Day of the week (if available)  -- LIST ONLY ONE DAY OF THE WEEK AT A TIME
 5) Time of the event in a 24-hr format (if available)
 """
-def create_an_event_list(text):
+def get_events_dict_list(text):
     events = set()
     parse_times(text, events)
     parse_cathegorize_titles(text, events)
     parse_weekdays(text, events)
 
-    events_list = []  # a list of events (each event is a dictionary)
+    event_dict_list = []  # a list of events (each event is a dictionary)
 
     for event in events:
         event_dict = {}
@@ -182,9 +177,29 @@ def create_an_event_list(text):
         event_dict["time"] = convert_times(text, event)
         event_dict["day of the week"] = text[event.weekday[0]:event.weekday[1]]
         event_dict["cathegory"] = event.cathegory
-        # TODO: event_dict["date"] = event.date
-        # TODO: event_dict["location"] = event.location
-        events_list.append(event_dict)
+        event_dict_list.append(event_dict)
+    return event_dict_list
+
+
+
+
+
+
+
+"""
+This function returns a list of event objects, with the following fields:
+"""
+def get_events_list(text):
+    events = set()
+    parse_times(text, events)
+    parse_cathegorize_titles(text, events)
+    parse_weekdays(text, events)
+
+    events_list = []  # a list of events (each event is a dictionary)
+
+    for event in events:
+        event.time = convert_times(text, event)
+        events_list.append(event)
     return events_list
 
 
