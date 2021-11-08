@@ -4,8 +4,9 @@ from datetime import *
 
 
 class Event:
-    def __init__(self, time):
+    def __init__(self, time, course_name):
         self.time = time
+        self.course_name = course_name
 
     def __str__(self):
         return f"{self.time[0]}, {self.time[1]}"
@@ -13,13 +14,41 @@ class Event:
     def set_title(self, title):
         self.title = title
 
+    def set_cathegory(self, cathegory): # Available cathegories: 
+        self.cathegory = cathegory      # "Office Hours", "Class Times", "Help Sessions"
+
     def set_weekday(self, weekday):
         self.weekday = weekday
 
+    def cathegorize(self, matches_arr, cathegory):
+        best_dist = float('inf')
+        for match in matches_arr:
+            (ms, me) = match.span()
+            if (ms - me) < best_dist:
+                self.set_title((ms, me))   # (ms, me) are the indices
+                self.set_cathegory(cathegory)
+
+
+def parse_course_name(text):
+    # look for the first number in the doc
+    # the word before that is likely the course title
+    for ind, symbol in enumerate(text):
+         if symbol.isdigit():
+            s = ind
+            ind += 1
+            while ind < len(text) and text[ind].isdigit():
+                ind += 1
+            e = ind    # (s,e) is the first number
+            break 
+    return text[s-6:e]   # TODO: make it more generalizable? 
+ 
+
+
+
 
 def parse_times(text, events):
+    course_name = parse_course_name(text)
     times_indicies = set()
-
     pattern = re.compile(
         r'\d\d?:?(\d\d)?(am|pm)?(-|\sto\s)\d\d?:?(\d\d)?(am|pm)')
 
@@ -29,7 +58,7 @@ def parse_times(text, events):
         time_indicie = match.span()
         if time_indicie not in times_indicies:
             times_indicies.add(match.span())
-            events.add(Event(time_indicie))
+            events.add(Event(time_indicie, course_name))
 
 
 def convert_times(text, event):
@@ -67,30 +96,28 @@ def convert_times(text, event):
     return "-".join(s)
             
 
-def parse_titles(text, events):
-    pattern = re.compile(
-        r'\b(office hours|math clinic|class|meeting|meet|session)', re.IGNORECASE)
-    for event in events:
-        s, e = event.time
-        matches = pattern.finditer(text[0:e])
-        best_dist = float('inf')
-        for match in matches:
-            (ms, me) = match.span()
-            if (s - me) < best_dist:
-                event.set_title((ms, me))
-    
-
 def parse_cathegorize_titles(text, events):
     oh_pattern = re.compile(
-        r'\b(office hours|oh|class|meeting|meet|session)', re.IGNORECASE)
+        r'\b(office hours|oh|)', re.IGNORECASE)
+    class_pattern =  re.compile(
+        r'\b(class|meeting|lecture)', re.IGNORECASE)
+    help_pattern =  re.compile(
+        r'\b(clinic|help|session)', re.IGNORECASE)
+
     for event in events:
         s, e = event.time  # get the time associated with the event
-        matches = oh_pattern.finditer(text[0:e])
-        best_dist = float('inf')
-        for match in matches:
-            (ms, me) = match.span()
-            if (s - me) < best_dist:
-                event.set_title((ms, me))   # (ms, me) are the indices
+
+        oh_matches = oh_pattern.finditer(text[0:e])
+        class_matches = class_pattern.finditer(text[0:e])
+        help_matches = help_pattern.finditer(text[0:e])
+        
+        event.cathegorize(oh_matches, "Office Hours")
+        event.cathegorize(class_matches, "Class Times")
+        event.cathegorize(help_matches, "Help Sessions")
+
+
+
+
 
 
 def parse_weekdays(text, events):
@@ -114,14 +141,14 @@ def parse_weekdays(text, events):
 def parse_text_for_events(text):
     events = set()
     parse_times(text, events)
-    parse_titles(text, events)
+    parse_cathegorize_titles(text, events)
     parse_weekdays(text, events)
+    
 
     for event in events:
         title = event.title
         wd = event.weekday
         print(text[title[0]:title[1]])
-        # print(time, text[time[0]:time[1]])
         print(convert_times(text, event))  # this will print the time
         print(text[wd[0]:wd[1]])
         print("")
@@ -143,23 +170,22 @@ This function returns a list of event objects, each containing
 def create_an_event_list(text):
     events = set()
     parse_times(text, events)
-    parse_titles(text, events)
+    parse_cathegorize_titles(text, events)
     parse_weekdays(text, events)
 
     events_list = []  # a list of events (each event is a dictionary)
 
     for event in events:
         event_dict = {}
+        event_dict["course name"] = event.course_name
         event_dict["event title"] = text[event.title[0]:event.title[1]]
         event_dict["time"] = convert_times(text, event)
         event_dict["day of the week"] = text[event.weekday[0]:event.weekday[1]]
-        # TODO: event_dict["course name"] =
-        # TODO: event_dict["event class"] = event.title
+        event_dict["cathegory"] = event.cathegory
         # TODO: event_dict["date"] = event.date
         # TODO: event_dict["location"] = event.location
         events_list.append(event_dict)
     return events_list
-    #print(events_list)
 
 
 
