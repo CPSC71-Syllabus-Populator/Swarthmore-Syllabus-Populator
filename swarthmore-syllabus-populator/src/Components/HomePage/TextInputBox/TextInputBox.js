@@ -19,6 +19,7 @@ const TextInputBox = () => {
           setText(e.target.value);
         }}
       />
+
       <button
         class={Style.parse_button}
         onClick={async () => {
