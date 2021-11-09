@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useDropzone } from "react-dropzone";
+import Style from "./FileInputBox.module.scss";
 
 const FileInputBox = () => {
   const baseStyle = {
@@ -64,6 +65,27 @@ const FileInputBox = () => {
         <input {...getInputProps()} />
         <p>Drag and drop PDF files here, or click to select files</p>
       </div>
+
+      <button
+        class={Style.parse_button}
+        onClick={async () => {
+          const data = new FormData();
+          data.append("text", "pdf");
+
+          const response = await fetch("/parse_pdf", {
+            method: "POST",
+            body: data,
+          });
+
+          if (response.ok) {
+            console.log("/parse_pdf post request succeeded");
+          } else {
+            console.error("/parse_pdf post request failed");
+          }
+        }}
+      >
+        <span> Parse PDF File </span>
+      </button>
     </div>
   );
 };

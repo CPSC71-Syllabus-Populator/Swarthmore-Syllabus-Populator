@@ -32,6 +32,7 @@ const HomePage = () => {
           >
             <InsertDriveFileIcon sx={{ color: "white" }} />
           </StyledFab>
+
           <StyledFab
             size="medium"
             onClick={() => {
@@ -40,6 +41,7 @@ const HomePage = () => {
           >
             <TextFieldsIcon sx={{ color: "white" }} />
           </StyledFab>
+
           <StyledFab
             size="medium"
             onClick={() => {
