@@ -23,6 +23,7 @@ const TextInputBox = () => {
       <button
         class={Style.parse_button}
         onClick={async () => {
+          var reader = new FileReader();
           const data = new FormData();
           data.append("text", text);
 

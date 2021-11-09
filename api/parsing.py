@@ -16,6 +16,17 @@ class Event:
         self.weekday = weekday
 
 
+def extract_syllabi_text(syllabi):
+    pdf_text = ""
+
+    with pdfplumber.open(syllabi) as pdf:
+        for pdf_page in pdf.pages:
+            page_text = pdf_page.extract_text()
+            pdf_text += '\n' + page_text
+
+    return pdf_text
+
+
 def parse_times(text, events):
     times_indicies = set()
 
@@ -54,19 +65,17 @@ def parse_weekdays(text, events):
 
     for event in events:
         s, e = event.time
-
         matches = pattern.finditer(text)
-
         best_dist = float('inf')
-        print(event)
+        # print(event) REMOVE
         for match in matches:
             (ms, me) = match.span()
             if abs(s - me) > 550 or abs(e - ms) > 550:
                 continue
-            print(match)
+            # print(match) REMOVE
             if (s - ms) < best_dist:
                 event.set_weekday((ms, me))
-        print("\n\n")
+        # print("\n\n") REMOVE
 
 
 def parse_text_for_events(text):
@@ -80,19 +89,7 @@ def parse_text_for_events(text):
         time = event.time
         wd = event.weekday
 
-        print(text[title[0]:title[1]])
-        print(time, text[time[0]:time[1]])
-        print(text[wd[0]:wd[1]])
-        print("")
-
-
-def extract_syllabi_text(syllabi):
-    all_text = ""
-    with pdfplumber.open(syllabi) as pdf:
-        # page = pdf.pages[0] - comment out or remove line
-        # text = page.extract_text() - comment out or remove line
-        for pdf_page in pdf.pages:
-            single_page_text = pdf_page.extract_text()
-            all_text = all_text + '\n' + single_page_text
-
-    return all_text
+        # print(text[title[0]:title[1]])
+        # print(time, text[time[0]:time[1]])
+        # print(text[wd[0]:wd[1]])
+        # print("")

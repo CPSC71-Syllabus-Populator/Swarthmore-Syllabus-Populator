@@ -70,7 +70,8 @@ const FileInputBox = () => {
         class={Style.parse_button}
         onClick={async () => {
           const data = new FormData();
-          data.append("text", "pdf");
+          console.log(acceptedFiles[0]);
+          data.append("file", acceptedFiles[0]);
 
           const response = await fetch("/parse_pdf", {
             method: "POST",

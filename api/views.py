@@ -10,13 +10,17 @@ main = Blueprint('main', __name__)
 
 @main.route('/parse_pdf', methods=['POST'])
 def parse_pdf():
-    # if not os.path.isdir(UPLOAD_FOLDER):
-    #     os.mkdir(UPLOAD_FOLDER)
+    if not os.path.isdir(UPLOAD_FOLDER):
+        os.mkdir(UPLOAD_FOLDER)
 
-    # file = request.files['file']
-    # fileName = secure_filename(file.filename)
-    # destination = "/".join([UPLOAD_FOLDER, fileName])
-    # file.save(destination)
+    file = request.files['file']
+    fileName = secure_filename(file.filename)
+    destination = "/".join([UPLOAD_FOLDER, fileName])
+    file.save(destination)
+
+    text = extract_syllabi_text(file)
+
+    parse_text_for_events(text)
 
     return 'Parsed', 201
 
