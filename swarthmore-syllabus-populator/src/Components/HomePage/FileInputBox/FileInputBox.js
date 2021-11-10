@@ -1,14 +1,27 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { styled } from "@mui/material/styles";
+import Alert from "@mui/material/Alert";
 import Style from "./FileInputBox.module.scss";
 
 const FileInputBox = () => {
+  const [displayAlert, setDisplayAlert] = useState(false);
+  const [fileDropped, setFileDropped] = useState(false);
+
+  const StyledAlert = styled(Alert)(({ theme }) => ({
+    marginBottom: "15px",
+  }));
+
   const baseStyle = {
     flex: 1,
     display: "flex",
     flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
-    padding: "20px",
+    paddingRight: "20px",
+    paddingLeft: "20px",
+    paddingBottom: "20px",
+    paddingTop: "20px",
     borderWidth: 2,
     borderRadius: 2,
     borderColor: "#702632",
@@ -19,6 +32,7 @@ const FileInputBox = () => {
     transition: "border .24s ease-in-out",
     height: "300px",
     width: "500px",
+    cursor: "pointer",
   };
 
   const activeStyle = {
@@ -43,12 +57,6 @@ const FileInputBox = () => {
     maxFiles = 1,
   } = useDropzone({ accept: ".pdf" });
 
-  const acceptedFileItems = acceptedFiles.map((file) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
-  ));
-
   const style = useMemo(
     () => ({
       ...baseStyle,
@@ -59,29 +67,63 @@ const FileInputBox = () => {
     [isDragActive, isDragReject, isDragAccept]
   );
 
+  const FileContainer = acceptedFiles.map((file) => (
+    <div key={file.path} class={Style.file_container}>
+      <i class="fas fa-file-pdf fa-5x"></i>
+      <p class={Style.file_path}> {file.path} </p>
+    </div>
+  ));
+
   return (
-    <div class="container">
-      <div {...getRootProps({ style })}>
-        <input {...getInputProps()} />
-        <p>Drag and drop PDF files here, or click to select files</p>
+    <div class={Style.container}>
+      {displayAlert ? (
+        <StyledAlert
+          severity="error"
+          onClose={() => {
+            setDisplayAlert(false);
+          }}
+        >
+          Please upload a file
+        </StyledAlert>
+      ) : (
+        <> </>
+      )}
+
+      <div class="container">
+        <div
+          {...getRootProps({
+            style,
+            onDrop: () => setFileDropped(true),
+          })}
+        >
+          <input {...getInputProps()} />
+          {fileDropped ? (
+            FileContainer
+          ) : (
+            <p>Drag and drop PDF files here, or click to select files</p>
+          )}
+        </div>
       </div>
 
       <button
         class={Style.parse_button}
         onClick={async () => {
-          const data = new FormData();
-          console.log(acceptedFiles[0]);
-          data.append("file", acceptedFiles[0]);
-
-          const response = await fetch("/parse_pdf", {
-            method: "POST",
-            body: data,
-          });
-
-          if (response.ok) {
-            console.log("/parse_pdf post request succeeded");
+          if (!fileDropped) {
+            setDisplayAlert(true);
           } else {
-            console.error("/parse_pdf post request failed");
+            const data = new FormData();
+            data.append("file", acceptedFiles[0]);
+
+            const response = await fetch("/parse_pdf", {
+              method: "POST",
+              body: data,
+            });
+
+            if (response.ok) {
+              console.log("/parse_pdf post request succeeded");
+            } else {
+              console.error("/parse_pdf post request failed");
+            }
           }
         }}
       >

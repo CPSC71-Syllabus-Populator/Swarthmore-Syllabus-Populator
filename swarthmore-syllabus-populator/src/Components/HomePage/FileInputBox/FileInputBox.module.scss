@@ -3,39 +3,75 @@ $secondary-color: rgba(145, 47, 64, 1);
 $background-color: rgba(237, 212, 178, 1);
 $text-color: rgba(251, 251, 251, 1);
 
-.parse_button {
-  background-color: $secondary-color;
-  margin-top: 25px;
-  width: 200px;
-  height: 30px;
-  border-style: none;
-  border-radius: 4px;
-  color: $text-color;
-  font-family: AirbnbCereal-Medium;
-  font-size: 12pt;
-}
+.container {
+  display: flex;
+  flex-direction: column;
 
-.parse_button span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
-}
+  .file_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // justify-content: center;
 
-.parse_button span:after {
-  content: "\00bb";
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.5s;
-}
+    .file_path {
+      margin-top: 10px;
+      font-family: AirbnbCereal;
+      font-size: 14px;
+      color: $secondary-color;
+    }
+  }
 
-.parse_button:hover span {
-  padding-right: 15px;
-}
+  .file_container i {
+    color: $secondary-color;
+  }
 
-.parse_button:hover span:after {
-  opacity: 1;
-  right: 0;
+  .file_container i:hover {
+    color: $primary-color;
+    cursor: pointer;
+  }
+
+  .parse_button {
+    background-color: $secondary-color;
+    margin-top: 25px;
+    width: 200px;
+    height: 30px;
+    border-style: none;
+    border-radius: 4px;
+    color: $text-color;
+    font-family: AirbnbCereal-Medium;
+    font-size: 12pt;
+  }
+
+  .parse_button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+  }
+
+  .parse_button span:after {
+    content: "\00bb";
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+
+  .parse_button:hover span {
+    padding-right: 15px;
+  }
+
+  .parse_button:hover span:after {
+    opacity: 1;
+    right: 0;
+  }
+
+  .input_file {
+    background-color: lightgray;
+    z-index: 1;
+    list-style: none;
+    width: 200px;
+    height: 200px;
+  }
 }
