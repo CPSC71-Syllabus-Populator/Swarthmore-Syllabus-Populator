@@ -66,6 +66,8 @@ def convert_times(text, event):
     s = time.lower()
     if "-" in s:      # check if it's a times range
         s = s.split("-")
+    elif "to" in s:      # check if it's a times range
+        s = s.split("to")
     else:
         s = [s]
     if len(s)==2:
