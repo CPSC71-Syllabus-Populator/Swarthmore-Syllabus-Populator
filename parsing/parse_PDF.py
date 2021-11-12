@@ -7,6 +7,12 @@ class Event:
     def __init__(self, time, course_name):
         self.time = time
         self.course_name = course_name
+        self.title = "Title not found"
+        self.cathegory = None  
+        self.weekday = "Weekday not found"
+
+
+
 
     def __str__(self):
         return f"{self.time[0]}, {self.time[1]}"
@@ -177,7 +183,7 @@ def get_events_dict_list(text):
         event_dict["course name"] = event.course_name
         event_dict["event title"] = text[event.title[0]:event.title[1]]
         event_dict["time"] = convert_times(text, event)
-        event_dict["day of the week"] = text[event.weekday[0]:event.weekday[1]]
+        event_dict["day of the week"] = event.weekday
         event_dict["cathegory"] = event.cathegory
         event_dict_list.append(event_dict)
     return event_dict_list

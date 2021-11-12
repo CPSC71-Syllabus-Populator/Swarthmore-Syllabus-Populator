@@ -1,6 +1,6 @@
 import os
 import pdfplumber
-from parse_PDF import parse_text_for_events, get_events_list
+from parse_PDF import parse_text_for_events, get_events_list, get_events_dict_list
 import time
 start_time = time.time()
 
@@ -47,8 +47,9 @@ def main():
     syllabiFiles = os.listdir(syllabiPath)
     syllabi = select_syllabi_file(syllabiFiles)
     text = extract_syllabi_text(os.path.join(syllabiPath, syllabi))
-    # parse_text_for_events(text)
+    parse_text_for_events(text)
     get_events_list(text)
+    print(get_events_dict_list(text))
     print("The list of the events extracted from the file:", get_events_list(text))
 
 
