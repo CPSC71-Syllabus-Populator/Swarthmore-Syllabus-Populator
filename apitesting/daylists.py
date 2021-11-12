@@ -368,7 +368,7 @@ def main():
 
     souplst = constructsoup(url)
 
-    print(constructmondays(souplst))
+    # print(constructmondays(souplst))
     # print(constructtuesdays(souplst))
     # print(constructwednesdays(souplst))
     # print(constructthursdays(souplst))
