@@ -65,9 +65,12 @@ def dateadd(indate, n):
 # returns true if indate1 is before indate2 or if indate1 is indate2, returns
 # false otherwise
 def comparedays(indate1, indate2):
+    # if indate1's month is before indate2's month
     if (indate1[0] < indate2[0]):
         return True
+    # if indate1's month is the same as indate2's month
     elif (indate1[0] == indate2[0]):
+        # if indate1's day is before or the same as indate2's day
         if (indate1[1] <= indate2[1]):
             return True
         else:
@@ -80,8 +83,10 @@ def comparedays(indate1, indate2):
 # returns "spring" when called during the first six months of the year, returns
 # "fall" when called during the last six months of the year
 def getsemester():
+    # store the time at which the function is called
     local_time = time.ctime(time.time()).split(" ")
 
+    # store the month when the function is called
     if (local_time[1] == "Jul"):
         semester = "fall"
     elif (local_time[1] == "Aug"):
@@ -97,13 +102,16 @@ def getsemester():
     else:
         semester = "spring"
 
+    # store the year when the function is called
     year = local_time[-1]
 
     return [semester, int(year)]
 
 # returns the swarthmore semester schedule url
 def constructurl():
+    # get the semester
     urlsem = getsemester()
+    # create the url string for the current relevant semester
     url = ("https://www.swarthmore.edu/academics/" + str(urlsem[1]) + "-" +
         urlsem[0] + "-semester")
 
@@ -138,11 +146,14 @@ def getfirstweek(souplst):
             monday = souplst[i - 1]
             break
 
+    # if monday is in August
     if (monday[0] == "A"):
         monday = [8, int(monday[-2:])]
+    # if monday is in January (accounting for MLK Jr. day)
     else:
         monday = [1, int(monday[-2:]) - 1]
 
+    # get dates for the first five weekdays in week one
     firstweek = [monday]
     for i in range(1, 5):
         tempday = dateadd(monday, i)
@@ -159,8 +170,10 @@ def getfallbreak(souplst):
             prefriday = souplst[i - 1]
             break
 
+    # store friday before fall break
     prefriday = [10, int(prefriday[-2:])]
 
+    # store dates for weekdays of fall break
     fbweek = []
     for i in range(3, 8):
         fbtempday = [10, prefriday[1] + i]
@@ -177,8 +190,10 @@ def getthanksgivingbreak(souplst):
             prewednesday = souplst[i - 1]
             break
 
+    # store wednesday before thanksgiving break
     prewednesday = [11, int(prewednesday[-2:])]
 
+    # store dates for weekdays of thanksgiving break
     tbdays = []
     for i in range(1, 3):
         tbtempday = [11, prewednesday[1] + i]
@@ -195,6 +210,7 @@ def getmlkjrday(souplst):
             mlkjrday = souplst[i - 1]
             break
 
+    # store date for MLK Jr. day
     mlkjrday = [1, int(mlkjrday[-2:])]
 
     return mlkjrday
@@ -208,8 +224,10 @@ def getspringbreak(souplst):
             prefriday = souplst[i - 1]
             break
 
+    # store friday before spring break
     prefriday = [3, int(prefriday[-1])]
 
+    # store dates for weekdays of spring break
     sbweek = []
     for i in range(3, 8):
         sbtempday = [3, prefriday[1] + i]
@@ -220,11 +238,13 @@ def getspringbreak(souplst):
 # returns the last day of classes
 # works for fall and spring
 def getlastday(souplst):
+    # search for the "Classes end. Lottery for spring housing." text
     for i in range(len(souplst)):
         if (souplst[i] == "Classes end. Lottery for spring housing."):
             lastday = souplst[i - 1]
             lastday = [12, int(lastday[-2:])]
             break
+        # search for the "Classes and seminars end." text
         elif (souplst[i] == "Classes and seminars end."):
             lastday = souplst[i - 1]
             lastday = [4, int(lastday[-2:])]
