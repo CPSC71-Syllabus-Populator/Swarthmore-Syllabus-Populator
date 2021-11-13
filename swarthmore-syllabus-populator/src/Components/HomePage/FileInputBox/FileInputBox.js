@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useHistory } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 import Style from "./FileInputBox.module.scss";
@@ -7,6 +8,8 @@ import Style from "./FileInputBox.module.scss";
 const FileInputBox = () => {
   const [displayAlert, setDisplayAlert] = useState(false);
   const [fileDropped, setFileDropped] = useState(false);
+
+  let history = useHistory();
 
   const StyledAlert = styled(Alert)(({ theme }) => ({
     marginBottom: "15px",
@@ -120,7 +123,7 @@ const FileInputBox = () => {
             });
 
             if (response.ok) {
-              console.log("/parse_pdf post request succeeded");
+              history.push("/events");
             } else {
               console.error("/parse_pdf post request failed");
             }

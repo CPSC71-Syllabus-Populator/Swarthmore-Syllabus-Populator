@@ -20,7 +20,8 @@ def parse_pdf():
 
     text = extract_syllabi_text(file)
 
-    parse_text_for_events(text)
+    events = parse_text_for_events(text)
+    session['events'] = events
 
     return 'Parsed', 201
 
@@ -28,20 +29,19 @@ def parse_pdf():
 @main.route('/parse_text', methods=['POST', 'GET'])
 def parse_text():
     text = request.form['text']
-    session['content'] = text
     # print(text)  # remove this
 
-    parse_text_for_events(text)
+    events_data = parse_text_for_events(text)
+    session['events'] = events_data
 
     return text, 201
 
 
-@main.route('/get_events', methods=['GET'])
+@main.route('/get_events', methods=['GET', 'POST'])
 def get_events():
-    if request.method == 'GET':
-        return session['content'], 201
 
-    return 'Invalid request', 401
+    print(session['events'])
+    return session['events'], 201
 
 
 @main.route('/send_link', methods=['POST'])
