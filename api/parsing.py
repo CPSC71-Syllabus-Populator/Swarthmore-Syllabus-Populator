@@ -1,10 +1,12 @@
 import pdfplumber
+import json
 import re
 
 
 class Event:
-    def __init__(self, time):
+    def __init__(self, location, time):
         self.time = time
+        self.location = location
 
     def __str__(self):
         return f"{self.time[0]}, {self.time[1]}"
@@ -14,6 +16,13 @@ class Event:
 
     def set_weekday(self, weekday):
         self.weekday = weekday
+
+    def set_id(self, id):
+        self.id = id
+
+    def serialize_to_JSON(self):
+        return {'id': self.id, 'title': self.title, 'time': self.time,
+                'weekday': self.weekday}
 
 
 def extract_syllabi_text(syllabi):
@@ -35,10 +44,10 @@ def parse_times(text, events):
 
     matches = pattern.finditer(text)
     for match in matches:
-        time_indicie = match.span()
-        if time_indicie not in times_indicies:
-            times_indicies.add(match.span())
-            events.add(Event(time_indicie))
+        s, e = match.span()
+        if (s, e) not in times_indicies:
+            times_indicies.add((s, e))
+            events.add(Event((s, e), text[s:e]))
 
 
 def parse_titles(text, events):
@@ -46,15 +55,16 @@ def parse_titles(text, events):
         r'\b(office hours|math clinic|class|meeting|meet|session)', re.IGNORECASE)
 
     for event in events:
-        s, e = event.time
+        s, e = event.location
 
         matches = pattern.finditer(text[0:e])
 
         best_dist = float('inf')
+        event.set_title("")
         for match in matches:
             (ms, me) = match.span()
             if (s - me) < best_dist:
-                event.set_title((ms, me))
+                event.set_title(text[ms:me])
 
 
 def parse_weekdays(text, events):
@@ -64,17 +74,20 @@ def parse_weekdays(text, events):
     )
 
     for event in events:
-        s, e = event.time
+        s, e = event.location
         matches = pattern.finditer(text)
-        best_dist = float('inf')
         # print(event) REMOVE
+
+        event.set_weekday("")
+
+        best_dist = float('inf')
         for match in matches:
             (ms, me) = match.span()
             if abs(s - me) > 550 or abs(e - ms) > 550:
                 continue
             # print(match) REMOVE
             if (s - ms) < best_dist:
-                event.set_weekday((ms, me))
+                event.set_weekday(text[ms:me])
         # print("\n\n") REMOVE
 
 
@@ -84,12 +97,9 @@ def parse_text_for_events(text):
     parse_titles(text, events)
     parse_weekdays(text, events)
 
-    for event in events:
-        title = event.title
-        time = event.time
-        wd = event.weekday
+    data = {'events': []}
+    for i, event in enumerate(events):
+        event.set_id(i)
+        data['events'].append(event.serialize_to_JSON())
 
-        # print(text[title[0]:title[1]])
-        # print(time, text[time[0]:time[1]])
-        # print(text[wd[0]:wd[1]])
-        # print("")
+    return data

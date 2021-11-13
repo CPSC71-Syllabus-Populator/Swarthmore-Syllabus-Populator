@@ -1,5 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import { styled } from "@mui/material/styles";
 import Style from "./TextInputBox.module.scss";
@@ -7,6 +7,8 @@ import Style from "./TextInputBox.module.scss";
 const TextInputBox = () => {
   const [text, setText] = useState("");
   const [displayAlert, setDisplayAlert] = useState(false);
+
+  let history = useHistory();
 
   const StyledAlert = styled(Alert)(({ theme }) => ({
     marginBottom: "15px",
@@ -56,7 +58,7 @@ const TextInputBox = () => {
             });
 
             if (response.ok) {
-              console.log("/parse_text post request succeeded");
+              history.push("/events");
             } else {
               console.error("/parse_text post request failed");
             }

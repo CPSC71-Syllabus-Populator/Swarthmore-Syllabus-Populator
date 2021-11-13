@@ -1,5 +1,7 @@
 package-lock.json
 /venv
 .DS_Store
-*.pyc
-.DS_Store
+**/.pyc
+**/node_modules
+**/__pycache__
+
