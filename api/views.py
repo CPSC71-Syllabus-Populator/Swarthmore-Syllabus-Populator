@@ -18,35 +18,22 @@ def parse_pdf():
     destination = "/".join([UPLOAD_FOLDER, fileName])
     file.save(destination)
 
-    text = extract_syllabi_text(file)
+    syllabi_text = extract_syllabi_text(file)
+    json_data = parse_text_for_events(syllabi_text)
+    session['json_data'] = json_data
 
-    events = parse_text_for_events(text)
-    session['events'] = events
-
-    return 'Parsed', 201
+    return 'Successfully parsed PDF', 201
 
 
 @main.route('/parse_text', methods=['POST', 'GET'])
 def parse_text():
-    text = request.form['text']
-    # print(text)  # remove this
+    syllabi_text = request.form['text']
+    json_data = parse_text_for_events(syllabi_text)
+    session['json_data'] = json_data
 
-    events_data = parse_text_for_events(text)
-    session['events'] = events_data
-
-    return text, 201
+    return "Successfully parsed text", 201
 
 
-@main.route('/get_events', methods=['GET', 'POST'])
+@main.route('/get_events', methods=['GET'])
 def get_events():
-
-    print(session['events'])
-    return session['events'], 201
-
-
-@main.route('/send_link', methods=['POST'])
-def send_link():
-    link = request.form['link']
-    print(link)
-
-    return 'Link received', 201
+    return session['json_data'], 201

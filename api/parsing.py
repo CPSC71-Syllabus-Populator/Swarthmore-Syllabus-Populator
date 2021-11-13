@@ -1,28 +1,6 @@
 import pdfplumber
-import json
+from api.Event import Event
 import re
-
-
-class Event:
-    def __init__(self, location, time):
-        self.time = time
-        self.location = location
-
-    def __str__(self):
-        return f"{self.time[0]}, {self.time[1]}"
-
-    def set_title(self, title):
-        self.title = title
-
-    def set_weekday(self, weekday):
-        self.weekday = weekday
-
-    def set_id(self, id):
-        self.id = id
-
-    def serialize_to_JSON(self):
-        return {'id': self.id, 'title': self.title, 'time': self.time,
-                'weekday': self.weekday}
 
 
 def extract_syllabi_text(syllabi):
@@ -52,11 +30,12 @@ def parse_times(text, events):
 
 def parse_titles(text, events):
     pattern = re.compile(
-        r'\b(office hours|math clinic|class|meeting|meet|session)', re.IGNORECASE)
+        r'\b(office hours|math clinic|class|meeting|meet|session)',
+        re.IGNORECASE
+    )
 
     for event in events:
         s, e = event.location
-
         matches = pattern.finditer(text[0:e])
 
         best_dist = float('inf')
@@ -76,7 +55,6 @@ def parse_weekdays(text, events):
     for event in events:
         s, e = event.location
         matches = pattern.finditer(text)
-        # print(event) REMOVE
 
         event.set_weekday("")
 
@@ -85,10 +63,8 @@ def parse_weekdays(text, events):
             (ms, me) = match.span()
             if abs(s - me) > 550 or abs(e - ms) > 550:
                 continue
-            # print(match) REMOVE
             if (s - ms) < best_dist:
                 event.set_weekday(text[ms:me])
-        # print("\n\n") REMOVE
 
 
 def parse_text_for_events(text):
@@ -97,9 +73,9 @@ def parse_text_for_events(text):
     parse_titles(text, events)
     parse_weekdays(text, events)
 
-    data = {'events': []}
+    json_data = {'events': []}
     for i, event in enumerate(events):
         event.set_id(i)
-        data['events'].append(event.serialize_to_JSON())
+        json_data['events'].append(event.serialize_to_JSON())
 
-    return data
+    return json_data
