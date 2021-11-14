@@ -37,3 +37,10 @@ def parse_text():
 @main.route('/get_events', methods=['GET'])
 def get_events():
     return session['json_data'], 201
+
+
+@main.route('/post_events_to_calendar', methods=['POST'])
+def post_events_to_calendar():
+    events = request.form["json_events"]
+
+    return "posted", 201

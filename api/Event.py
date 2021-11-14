@@ -2,6 +2,7 @@ class Event:
     def __init__(self, location, time):
         self.time = time
         self.location = location
+        self.checked = True
 
     def __str__(self):
         output = ""
@@ -22,4 +23,4 @@ class Event:
 
     def serialize_to_JSON(self):
         return {'id': self.id, 'title': self.title, 'time': self.time,
-                'weekday': self.weekday}
+                'weekday': self.weekday, 'checked': self.checked}

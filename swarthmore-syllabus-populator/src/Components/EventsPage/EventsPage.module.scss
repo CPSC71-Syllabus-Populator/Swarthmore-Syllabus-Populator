@@ -1,0 +1,39 @@
+$button-primary-color: rgba(145, 47, 64, 1);
+$button-secondary-color: rgba(98, 4, 19, 0.5);
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .events_container {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    width: 80%;
+
+    .events_grid {
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      margin-top: 25px;
+      grid-gap: 25px;
+    }
+  }
+
+  .add_events_button {
+    margin-top: 25px;
+    width: 300px;
+    height: 35px;
+    border: none;
+    border-radius: 5px;
+    background-color: $button-primary-color;
+    font-family: AirbnbCereal-Medium;
+    font-size: 14pt;
+    color: white;
+  }
+
+  .add_events_button:hover {
+    background-color: $button-secondary-color;
+    font-family: AirbnbCereal-Medium;
+    cursor: pointer;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Event from "./Event";
+import Event from "./EventCard/EventCard";
+import Style from "./EventsPage.module.scss";
 
 const Events = () => {
   const [events, setEvents] = useState([{}]);
@@ -28,14 +29,40 @@ const Events = () => {
 
   const EventsContainer = events.map((event) => (
     <div key={event["id"]}>
-      <Event title={event["title"]} time={event["time"]}></Event>
+      <Event event={event}></Event>
     </div>
   ));
 
   return (
-    <div>
-      <h2>Our parsing results:</h2>
-      {EventsContainer}
+    <div class={Style.container}>
+      <div class={Style.events_container}>
+        <div class={Style.events_grid}>{EventsContainer}</div>
+
+        <button
+          class={Style.add_events_button}
+          onClick={() => {
+            const data = new FormData();
+            data.append("json_events", events);
+
+            const response = fetch("/post_events_to_calendar", {
+              method: "POST",
+              body: data,
+            });
+
+            if (response.ok) {
+              console.error("/post_events_to_calendar request failed");
+            } else {
+              console.error("/post_events_to_calendar request failed");
+            }
+            // events.map((event) => {
+            //   if (event["checked"] == true) {
+            //   }
+            // });
+          }}
+        >
+          Add to Calendar
+        </button>
+      </div>
     </div>
   );
 };
