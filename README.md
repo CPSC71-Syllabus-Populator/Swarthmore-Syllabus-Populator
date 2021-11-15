@@ -1,7 +1,7 @@
 # Syllabus Google Calendar Populator
 
 
-This repository contains the source code for the Syllabus Google Calendar Populator web-application. This application allows the user to upload a course syllabus in a PDF format to create Google Calendar events. The application course meeting times, office hours times, help sessions, due dates, and exams, and the user would be able to choose which events they want to see. If 
+This repository contains the source code for the Syllabus Google Calendar Populator web-application. This application allows the user to upload a course syllabus in a PDF format to create Google Calendar events. 
 
 ## Requirements/dependencies 
 
