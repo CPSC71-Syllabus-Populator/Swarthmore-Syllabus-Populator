@@ -1,9 +1,12 @@
 from flask import Blueprint, request, session
 from werkzeug.utils import secure_filename
 from api.parsing import *
+from api.create_gcal_events import *
+import json
 import os
 
 UPLOAD_FOLDER = "./".join(["./uploads"])
+SCOPES = ['https://www.googleapis.com/auth/calendar.events']
 
 main = Blueprint('main', __name__)
 
@@ -42,5 +45,27 @@ def get_events():
 @main.route('/post_events_to_calendar', methods=['POST'])
 def post_events_to_calendar():
     events = request.form["json_events"]
+    json_events = json.loads(events)
+
+    verify_google_credentials(SCOPES)
+
+    # tokenize the swarthmore page
+    url = constructurl()
+    souplist = constructsoup(url)
+
+    events_to_publish = []
+    for json_event in json_events:
+        # get the semester and year
+
+        # figure out what day it is and then get all the days for that day and
+        # create a bunch of events
+        all_days = constructmondays(souplist)
+
+        for day in all_days:
+            eventData = "year-month-day-T24hour format"
+
+            # append the event to events_to_publish
+
+        #
 
     return "posted", 201

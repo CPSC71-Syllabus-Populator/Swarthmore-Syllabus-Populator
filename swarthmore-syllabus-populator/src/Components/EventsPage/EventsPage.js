@@ -42,15 +42,15 @@ const Events = () => {
           class={Style.add_events_button}
           onClick={() => {
             const data = new FormData();
-            data.append("json_events", events);
+            data.append("json_events", JSON.stringify(events));
 
             const response = fetch("/post_events_to_calendar", {
               method: "POST",
               body: data,
             });
 
-            if (response.ok) {
-              console.error("/post_events_to_calendar request failed");
+            if (response.ok == true) {
+              console.log("/post_events_to_calendar request succeeded");
             } else {
               console.error("/post_events_to_calendar request failed");
             }
