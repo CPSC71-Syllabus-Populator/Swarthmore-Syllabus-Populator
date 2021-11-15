@@ -1,6 +1,6 @@
 import pdfplumber
-from api.Event import Event
 import re
+from api.Event import *
 
 
 def extract_syllabi_text(syllabi):

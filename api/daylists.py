@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
-import time
+from time import *
 
 # adds n days to the input date in the input year
+
+
 def dateadd(indate, n):
     retdate = [indate[0], indate[1] + n]
     year = getsemester()[1]
@@ -64,6 +66,8 @@ def dateadd(indate, n):
 
 # returns true if indate1 is before indate2 or if indate1 is indate2, returns
 # false otherwise
+
+
 def comparedays(indate1, indate2):
     # if indate1's month is before indate2's month
     if (indate1[0] < indate2[0]):
@@ -77,7 +81,6 @@ def comparedays(indate1, indate2):
             return False
     else:
         return False
-
 
 
 # returns "spring" when called during the first six months of the year, returns
@@ -108,17 +111,16 @@ def getsemester():
     return [semester, int(year)]
 
 # returns the swarthmore semester schedule url
+
+
 def constructurl():
     # get the semester
     urlsem = getsemester()
     # create the url string for the current relevant semester
     url = ("https://www.swarthmore.edu/academics/" + str(urlsem[1]) + "-" +
-        urlsem[0] + "-semester")
+           urlsem[0] + "-semester")
 
     return url
-
-
-
 
 
 # pull the tokenized text from the input url
@@ -139,6 +141,8 @@ def constructsoup(url):
 
 # returns a list of the weekdays during week one
 # works for fall and spring
+
+
 def getfirstweek(souplst):
     # search for the "Classes begin." text
     for i in range(len(souplst)):
@@ -163,6 +167,8 @@ def getfirstweek(souplst):
 
 # returns a list of the weekdays during fall break
 # only relevant for fall semesters
+
+
 def getfallbreak(souplst):
     # search for the "Fall Break begins after last class." text
     for i in range(len(souplst)):
@@ -183,6 +189,8 @@ def getfallbreak(souplst):
 
 # returns the two days of thanksgiving break
 # only relevant for fall semesters
+
+
 def getthanksgivingbreak(souplst):
     # search for the "Thanksgiving Break begins after last class." text
     for i in range(len(souplst)):
@@ -203,6 +211,8 @@ def getthanksgivingbreak(souplst):
 
 # returns MLK Jr. day
 # only relevant for spring semesters
+
+
 def getmlkjrday(souplst):
     # search for the "Martin Luther King Jr." text
     for i in range(len(souplst)):
@@ -217,6 +227,8 @@ def getmlkjrday(souplst):
 
 # returns a list of the weekdays during spring break
 # only relevant for spring semesters
+
+
 def getspringbreak(souplst):
     # search for the "Spring Break begins after last class." text
     for i in range(len(souplst)):
@@ -237,6 +249,8 @@ def getspringbreak(souplst):
 
 # returns the last day of classes
 # works for fall and spring
+
+
 def getlastday(souplst):
     # search for the "Classes end. Lottery for spring housing." text
     for i in range(len(souplst)):
@@ -251,8 +265,6 @@ def getlastday(souplst):
             break
 
     return lastday
-
-
 
 
 # returns a list of every weekday in the semester
@@ -270,13 +282,15 @@ def constructmondays(souplst):
 
     # remove days off for fall semester
     if (firstmonday[0] == 8):
-        retlst.remove(getfallbreak(souplst)[0]) # fall break
+        retlst.remove(getfallbreak(souplst)[0])  # fall break
     # remove days off for spring semester
     else:
-        retlst.remove(getmlkjrday(souplst)) # MLK Jr. day
-        retlst.remove(getspringbreak(souplst)[0]) # spring break
+        retlst.remove(getmlkjrday(souplst))  # MLK Jr. day
+        retlst.remove(getspringbreak(souplst)[0])  # spring break
 
     return retlst
+
+
 def constructtuesdays(souplst):
     firsttuesday = getfirstweek(souplst)[1]
     lastday = getlastday(souplst)
@@ -290,12 +304,14 @@ def constructtuesdays(souplst):
 
     # remove days off for fall semester
     if (firsttuesday[0] == 8) or (firsttuesday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[1]) # fall break
+        retlst.remove(getfallbreak(souplst)[1])  # fall break
     # remove days off for spring semester
     else:
-        retlst.remove(getspringbreak(souplst)[1]) # spring break
+        retlst.remove(getspringbreak(souplst)[1])  # spring break
 
     return retlst
+
+
 def constructwednesdays(souplst):
     firstwednesday = getfirstweek(souplst)[2]
     lastday = getlastday(souplst)
@@ -309,12 +325,14 @@ def constructwednesdays(souplst):
 
     # remove days off for fall semester
     if (firstwednesday[0] == 8) or (firstwednesday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[2]) # fall break
+        retlst.remove(getfallbreak(souplst)[2])  # fall break
     # remove days off for spring semester
     else:
-        retlst.remove(getspringbreak(souplst)[2]) # spring break
+        retlst.remove(getspringbreak(souplst)[2])  # spring break
 
     return retlst
+
+
 def constructthursdays(souplst):
     firstthursday = getfirstweek(souplst)[3]
     lastday = getlastday(souplst)
@@ -328,13 +346,15 @@ def constructthursdays(souplst):
 
     # remove days off for fall semester
     if (firstthursday[0] == 8) or (firstthursday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[3]) # fall break
-        retlst.remove(getthanksgivingbreak(souplst)[0]) # thanksgiving break
+        retlst.remove(getfallbreak(souplst)[3])  # fall break
+        retlst.remove(getthanksgivingbreak(souplst)[0])  # thanksgiving break
     # remove days off for spring semester
     else:
-        retlst.remove(getspringbreak(souplst)[3]) # spring break
+        retlst.remove(getspringbreak(souplst)[3])  # spring break
 
     return retlst
+
+
 def constructfridays(souplst):
     firstfriday = getfirstweek(souplst)[4]
     lastday = getlastday(souplst)
@@ -348,15 +368,13 @@ def constructfridays(souplst):
 
     # remove days off for fall semester
     if (firstfriday[0] == 8) or (firstfriday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[4]) # fall break
-        retlst.remove(getthanksgivingbreak(souplst)[1]) # thanksgiving break
+        retlst.remove(getfallbreak(souplst)[4])  # fall break
+        retlst.remove(getthanksgivingbreak(souplst)[1])  # thanksgiving break
     # remove days off for spring semester
     else:
-        retlst.remove(getspringbreak(souplst)[4]) # spring break
+        retlst.remove(getspringbreak(souplst)[4])  # spring break
 
     return retlst
-
-
 
 
 def main():
@@ -375,29 +393,8 @@ def main():
     # print(constructfridays(souplst))
 
 
-
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #
