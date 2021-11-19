@@ -1,36 +1,45 @@
 $primary-color: rgba(145, 47, 64, 1);
 $secondary-color: rgba(112, 38, 50, 1);
-$background-color: rgba(98, 4, 19, 0.5);
+$background-color-checked: rgba(98, 4, 19, 0.5);
+$background-color-unchecked: rgba(98, 4, 19, 0.3);
 $text-color: rgba(222, 226, 230, 1);
 
-.container {
+.container_checked {
   width: 200px;
   height: 200px;
   border-radius: 4px;
   padding: 10px;
-  background-color: $background-color;
+  background-color: $background-color-checked;
+}
 
-  .title_container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0px;
+.container_unchecked {
+  width: 200px;
+  height: 200px;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: $background-color-unchecked;
+}
 
-    .title_heading {
-      font-family: AirbnbCereal;
-      font-size: 22px;
-    }
-  }
+.title_container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0px;
 
-  .weekday_heading {
+  .title_heading {
     font-family: AirbnbCereal;
-    font-size: 16px;
-    margin-top: 0px;
-    color: $text-color;
+    font-size: 22px;
   }
+}
 
-  .time_heading {
-    font-family: AirbnbCereal;
-    font-size: 16px;
-    color: $text-color;
-  }
+.weekday_heading {
+  font-family: AirbnbCereal;
+  font-size: 16px;
+  margin-top: 0px;
+  color: $text-color;
+}
+
+.time_heading {
+  font-family: AirbnbCereal;
+  font-size: 16px;
+  color: $text-color;
 }

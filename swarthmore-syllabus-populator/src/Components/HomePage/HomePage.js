@@ -41,20 +41,10 @@ const HomePage = () => {
           >
             <TextFieldsIcon sx={{ color: "white" }} />
           </StyledFab>
-
-          <StyledFab
-            size="medium"
-            onClick={() => {
-              setInputMethod("Link");
-            }}
-          >
-            <LinkIcon sx={{ color: "white" }} />
-          </StyledFab>
         </div>
         <div class={Style.input_right}>
           {inputMethod === "File" ? <FileInputBox /> : <></>}
           {inputMethod === "Text" ? <TextInputBox /> : <></>}
-          {inputMethod === "Link" ? <LinkInputBox /> : <></>}
         </div>
       </div>
     </div>

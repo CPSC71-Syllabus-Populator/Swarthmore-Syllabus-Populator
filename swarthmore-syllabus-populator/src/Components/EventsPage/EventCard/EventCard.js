@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import Style from "./EventCard.module.scss";
 
 const Event = ({ event }) => {
+  const [checked, setChecked] = useState(event["checked"]);
+
   const StyledCheckbox = styled(Checkbox)(({ theme }) => ({
     "& .MuiSvgIcon-root": {
       color: "#702632",
@@ -28,13 +30,13 @@ const Event = ({ event }) => {
   }));
 
   return (
-    <div class={Style.container}>
+    <div class={checked ? Style.container_checked : Style.container_unchecked}>
       <div class={Style.title_container}>
         <StyledTextField
           id="standard-basic"
           variant="standard"
-          placeholder={event["title"]}
-          onChange={(e) => (event["title"] = e.target.value)}
+          placeholder={event["summary"]}
+          onChange={(e) => (event["summary"] = e.target.value)}
         />
 
         <StyledCheckbox
@@ -42,11 +44,12 @@ const Event = ({ event }) => {
           size="medium"
           onChange={(e) => {
             event["checked"] = e.target.checked;
+            setChecked(e.target.checked);
           }}
         />
       </div>
       <p class={Style.weekday_heading}>{event["weekday"]}</p>
-      <p class={Style.time_heading}>{event["time"]}</p>
+      <p class={Style.time_heading}>{event["displayTime"]}</p>
     </div>
   );
 };

@@ -1,7 +1,8 @@
 from flask import Blueprint, request, session
 from werkzeug.utils import secure_filename
-from api.parsing import *
-from api.create_gcal_events import *
+from api.parsing import parse_text_for_events
+from api.create_gcal_events import verify_google_credentials
+from api.utils import build_google_calendar_events_JSON, extract_syllabi_text, serialize_parsed_events_to_JSON
 import json
 import os
 
@@ -22,7 +23,8 @@ def parse_pdf():
     file.save(destination)
 
     syllabi_text = extract_syllabi_text(file)
-    json_data = parse_text_for_events(syllabi_text)
+    parsed_events = parse_text_for_events(syllabi_text)
+    json_data = serialize_parsed_events_to_JSON(parsed_events)
     session['json_data'] = json_data
 
     return 'Successfully parsed PDF', 201
@@ -31,7 +33,8 @@ def parse_pdf():
 @main.route('/parse_text', methods=['POST', 'GET'])
 def parse_text():
     syllabi_text = request.form['text']
-    json_data = parse_text_for_events(syllabi_text)
+    parsed_events = parse_text_for_events(syllabi_text)
+    json_data = serialize_parsed_events_to_JSON(parsed_events)
     session['json_data'] = json_data
 
     return "Successfully parsed text", 201
@@ -39,6 +42,9 @@ def parse_text():
 
 @main.route('/get_events', methods=['GET'])
 def get_events():
+    for i in range(1000):
+        for j in range(100000):
+            ...
     return session['json_data'], 201
 
 
@@ -47,25 +53,14 @@ def post_events_to_calendar():
     events = request.form["json_events"]
     json_events = json.loads(events)
 
-    verify_google_credentials(SCOPES)
+    json_data = build_google_calendar_events_JSON(json_events)
 
-    # tokenize the swarthmore page
-    url = constructurl()
-    souplist = constructsoup(url)
+    gcal_service = verify_google_credentials(SCOPES)
 
-    events_to_publish = []
-    for json_event in json_events:
-        # get the semester and year
+    print(json_data[0])
 
-        # figure out what day it is and then get all the days for that day and
-        # create a bunch of events
-        all_days = constructmondays(souplist)
-
-        for day in all_days:
-            eventData = "year-month-day-T24hour format"
-
-            # append the event to events_to_publish
-
-        #
+    for json_event in json_data:
+        event = gcal_service.events().insert(
+            calendarId='primary', body=json_event).execute()
 
     return "posted", 201
