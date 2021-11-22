@@ -31,7 +31,7 @@ npm start     # runs the node script
 cd ..
 export FLASK_APP=api
 python3 -m flask run   # the server
-
+```
 
 
 ## License
