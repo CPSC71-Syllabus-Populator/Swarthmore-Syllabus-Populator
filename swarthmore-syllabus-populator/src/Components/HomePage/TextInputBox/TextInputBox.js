@@ -15,7 +15,7 @@ const TextInputBox = () => {
   }));
 
   return (
-    <div class={Style.container}>
+    <div className={Style.container}>
       {displayAlert ? (
         <StyledAlert
           severity="error"
@@ -30,7 +30,7 @@ const TextInputBox = () => {
       )}
 
       <textarea
-        class={Style.input}
+        className={Style.input}
         type="text"
         name="text"
         placeholder="Paste text here"
@@ -43,12 +43,11 @@ const TextInputBox = () => {
       />
 
       <button
-        class={Style.parse_button}
+        className={Style.parse_button}
         onClick={async () => {
           if (text.replace(/^\s+/, "").replace(/\s+$/, "") === "") {
             setDisplayAlert(true);
           } else {
-            var reader = new FileReader();
             const data = new FormData();
             data.append("text", text);
 

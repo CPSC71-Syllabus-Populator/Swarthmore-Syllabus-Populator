@@ -57,8 +57,7 @@ const FileInputBox = () => {
     isDragActive,
     isDragAccept,
     isDragReject,
-    maxFiles = 1,
-  } = useDropzone({ accept: ".pdf" });
+  } = useDropzone({ accept: ".pdf", maxFiles: 1 });
 
   const style = useMemo(
     () => ({
@@ -71,14 +70,14 @@ const FileInputBox = () => {
   );
 
   const FileContainer = acceptedFiles.map((file) => (
-    <div key={file.path} class={Style.file_container}>
-      <i class="fas fa-file-pdf fa-5x"></i>
-      <p class={Style.file_path}> {file.path} </p>
+    <div key={file.path} className={Style.file_container}>
+      <i className="fas fa-file-pdf fa-5x"></i>
+      <p className={Style.file_path}> {file.path} </p>
     </div>
   ));
 
   return (
-    <div class={Style.container}>
+    <div className={Style.container}>
       {displayAlert ? (
         <StyledAlert
           severity="error"
@@ -92,7 +91,7 @@ const FileInputBox = () => {
         <> </>
       )}
 
-      <div class="container">
+      <div className="container">
         <div
           {...getRootProps({
             style,
@@ -109,7 +108,7 @@ const FileInputBox = () => {
       </div>
 
       <button
-        class={Style.parse_button}
+        className={Style.parse_button}
         onClick={async () => {
           if (!fileDropped) {
             setDisplayAlert(true);

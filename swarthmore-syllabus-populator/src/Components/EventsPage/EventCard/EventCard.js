@@ -30,8 +30,10 @@ const Event = ({ event }) => {
   }));
 
   return (
-    <div class={checked ? Style.container_checked : Style.container_unchecked}>
-      <div class={Style.title_container}>
+    <div
+      className={checked ? Style.container_checked : Style.container_unchecked}
+    >
+      <div className={Style.title_container}>
         <StyledTextField
           id="standard-basic"
           variant="standard"
@@ -48,8 +50,8 @@ const Event = ({ event }) => {
           }}
         />
       </div>
-      <p class={Style.weekday_heading}>{event["weekday"]}</p>
-      <p class={Style.time_heading}>{event["displayTime"]}</p>
+      <p className={Style.weekday_heading}>{event["weekday"]}</p>
+      <p className={Style.time_heading}>{event["displayTime"]}</p>
     </div>
   );
 };

@@ -1,89 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+from datetime import datetime, timedelta
 
 
-def dateadd(indate, n):
-    retdate = [indate[0], indate[1] + n]
-    year = getsemester()[1]
-
-    # january to february
-    if (retdate[0] == 1) and (retdate[1] > 31):
-        retdate[0] = 2
-        retdate[1] = retdate[1] % 31
-    # february to march (during non leap years)
-    elif (year % 4 != 0) and (retdate[0] == 2) and (retdate[1] > 28):
-        retdate[0] = 3
-        retdate[1] = retdate[1] % 28
-    # february to march (during leap years)
-    elif (year % 4 == 0) and (retdate[0] == 2) and (retdate[1] > 29):
-        retdate[0] = 3
-        retdate[1] = retdate[1] % 29
-    # march to april
-    elif (retdate[0] == 3) and (retdate[1] > 31):
-        retdate[0] = 4
-        retdate[1] = retdate[1] % 31
-    # april to may
-    elif (retdate[0] == 4) and (retdate[1] > 30):
-        retdate[0] = 5
-        retdate[1] = retdate[1] % 30
-    # may to june
-    elif (retdate[0] == 5) and (retdate[1] > 31):
-        retdate[0] = 6
-        retdate[1] = retdate[1] % 31
-    # june to july
-    elif (retdate[0] == 6) and (retdate[1] > 30):
-        retdate[0] = 7
-        retdate[1] = retdate[1] % 30
-    # july to august
-    elif (retdate[0] == 7) and (retdate[1] > 31):
-        retdate[0] = 8
-        retdate[1] = retdate[1] % 31
-    # august to september
-    elif (retdate[0] == 8) and (retdate[1] > 31):
-        retdate[0] = 9
-        retdate[1] = retdate[1] % 31
-    # september to october
-    elif (retdate[0] == 9) and (retdate[1] > 30):
-        retdate[0] = 10
-        retdate[1] = retdate[1] % 30
-    # october to november
-    elif (retdate[0] == 10) and (retdate[1] > 31):
-        retdate[0] = 11
-        retdate[1] = retdate[1] % 31
-    # november to december
-    elif (retdate[0] == 11) and (retdate[1] > 30):
-        retdate[0] = 12
-        retdate[1] = retdate[1] % 30
-    # december to january
-    elif (retdate[0] == 12) and (retdate[1] > 31):
-        retdate[0] = 1
-        retdate[1] = retdate[1] % 31
-
-    return retdate
-
-# returns true if indate1 is before indate2 or if indate1 is indate2, returns
-# false otherwise
-
-
-def comparedays(indate1, indate2):
-    # if indate1's month is before indate2's month
-    if (indate1[0] < indate2[0]):
-        return True
-    # if indate1's month is the same as indate2's month
-    elif (indate1[0] == indate2[0]):
-        # if indate1's day is before or the same as indate2's day
-        if (indate1[1] <= indate2[1]):
-            return True
-        else:
-            return False
-    else:
-        return False
-
-
-# returns "spring" when called during the first six months of the year, returns
-# "fall" when called during the last six months of the year
-def getsemester():
+def get_semester():
+    """
+    Returns:
+        * "spring" when called during the first six months of the year
+        * "fall" when called during the last six months of the year
+    """
     # store the time at which the function is called
     local_time = time.ctime(time.time()).split(" ")
 
@@ -106,270 +32,164 @@ def getsemester():
     # store the year when the function is called
     year = local_time[-1]
 
-    return [semester, int(year)]
-
-# returns the swarthmore semester schedule url
+    return (semester, year)
 
 
-def constructurl():
-    # get the semester
-    urlsem = getsemester()
+def get_page_url(semester, year):
+    """
+    Purpose: returns the swarthmore semester schedule url
+    """
     # create the url string for the current relevant semester
-    url = ("https://www.swarthmore.edu/academics/" + str(urlsem[1]) + "-" +
-           urlsem[0] + "-semester")
-
-    return url
+    return ("https://www.swarthmore.edu/academics/" + year + "-" +
+            semester + "-semester")
 
 
-# pull the tokenized text from the input url
-def constructsoup(url):
+def scrape_page_text(url):
+    """
+    Purpose: pull the tokenized text from the input url
+    """
     # store webpage text from input url in outtxt
     data = requests.get(url).text
     soup = BeautifulSoup(data, "html.parser")
-    outtxt = soup.get_text()
 
     # split outtxt by new line character and remove all empty strings
-    outlst = outtxt.split("\n")
-    cleanoutlst = []
-    for i in range(len(outlst)):
-        if (outlst[i] != ""):
-            cleanoutlst.append(outlst[i])
+    page_text_items = soup.get_text().split("\n")
 
-    return cleanoutlst
-
-# returns a list of the weekdays during week one
-# works for fall and spring
+    return [text_item for text_item in page_text_items if text_item != ""]
 
 
-def getfirstweek(souplst):
+def get_first_week(soup_lst, year):
+    """
+    Purpose:
+        * returns a list of the weekdays during week one
+        * works for fall and spring
+    """
+    first_week = {}
+
     # search for the "Classes begin." text
-    for i in range(len(souplst)):
-        if (souplst[i] == "Classes begin."):
-            monday = souplst[i - 1]
+    for i in range(len(soup_lst)):
+        if soup_lst[i] == "Classes begin.":
+            first_day = datetime.strptime(
+                soup_lst[i - 1] + " " + year, "%B %d %Y")
+            first_week[first_day.weekday()] = first_day
             break
 
-    # if monday is in August
-    if (monday[0] == "A"):
-        monday = [8, int(monday[-2:])]
-    # if monday is in January (accounting for MLK Jr. day)
-    else:
-        monday = [1, int(monday[-2:]) - 1]
+    next_day = first_day + timedelta(1)
+    while next_day.weekday() != first_day.weekday():
+        if next_day.weekday() != 5 and next_day.weekday() != 6:
+            first_week[next_day.weekday()] = next_day
+        next_day += timedelta(1)
 
-    # get dates for the first five weekdays in week one
-    firstweek = [monday]
-    for i in range(1, 5):
-        tempday = dateadd(monday, i)
-        firstweek.append(tempday)
-
-    return firstweek
-
-# returns a list of the weekdays during fall break
-# only relevant for fall semesters
+    return first_week
 
 
-def getfallbreak(souplst):
-    # search for the "Fall Break begins after last class." text
-    for i in range(len(souplst)):
-        if (souplst[i] == "Fall Break begins after last class."):
-            prefriday = souplst[i - 1]
-            break
-
-    # store friday before fall break
-    prefriday = [10, int(prefriday[-2:])]
-
-    # store dates for weekdays of fall break
-    fbweek = []
-    for i in range(3, 8):
-        fbtempday = [10, prefriday[1] + i]
-        fbweek.append(fbtempday)
-
-    return fbweek
-
-# returns the two days of thanksgiving break
-# only relevant for fall semesters
-
-
-def getthanksgivingbreak(souplst):
-    # search for the "Thanksgiving Break begins after last class." text
-    for i in range(len(souplst)):
-        if (souplst[i] == "Thanksgiving Break begins after last class."):
-            prewednesday = souplst[i - 1]
-            break
-
-    # store wednesday before thanksgiving break
-    prewednesday = [11, int(prewednesday[-2:])]
-
-    # store dates for weekdays of thanksgiving break
-    tbdays = []
-    for i in range(1, 3):
-        tbtempday = [11, prewednesday[1] + i]
-        tbdays.append(tbtempday)
-
-    return tbdays
-
-# returns MLK Jr. day
-# only relevant for spring semesters
-
-
-def getmlkjrday(souplst):
-    # search for the "Martin Luther King Jr." text
-    for i in range(len(souplst)):
-        if (souplst[i][:22] == "Martin Luther King Jr."):
-            mlkjrday = souplst[i - 1]
-            break
-
-    # store date for MLK Jr. day
-    mlkjrday = [1, int(mlkjrday[-2:])]
-
-    return mlkjrday
-
-# returns a list of the weekdays during spring break
-# only relevant for spring semesters
-
-
-def getspringbreak(souplst):
-    # search for the "Spring Break begins after last class." text
-    for i in range(len(souplst)):
-        if (souplst[i] == "Spring Break begins after last class."):
-            prefriday = souplst[i - 1]
-            break
-
-    # store friday before spring break
-    prefriday = [3, int(prefriday[-1])]
-
-    # store dates for weekdays of spring break
-    sbweek = []
-    for i in range(3, 8):
-        sbtempday = [3, prefriday[1] + i]
-        sbweek.append(sbtempday)
-
-    return sbweek
-
-# returns the last day of classes
-# works for fall and spring
-
-
-def getlastday(souplst):
+def get_last_day(soup_lst, year):
+    """
+    Purpose:
+        * returns the last day of classes
+        * works for fall and spring
+    """
     # search for the "Classes end. Lottery for spring housing." text
-    for i in range(len(souplst)):
-        if (souplst[i] == "Classes end. Lottery for spring housing."):
-            lastday = souplst[i - 1]
-            lastday = [12, int(lastday[-2:])]
-            break
+    for i in range(len(soup_lst)):
+        if soup_lst[i] == "Classes end. Lottery for spring housing.":
+            return datetime.strptime(
+                soup_lst[i - 1] + " " + year, "%B %d %Y")
         # search for the "Classes and seminars end." text
-        elif (souplst[i] == "Classes and seminars end."):
-            lastday = souplst[i - 1]
-            lastday = [4, int(lastday[-2:])]
+        elif soup_lst[i] == "Classes and seminars end.":
+            return datetime.strptime(
+                soup_lst[i - 1] + " " + year, "%B %d %Y")
+
+
+def get_fall_break(soup_lst, year):
+    """
+    Purpose:
+       * returns a list of the weekdays during fall break
+       * only relevant for fall semesters
+    """
+    fall_break_week = set()
+
+    # search for the "Fall Break begins after last class." text
+    for i in range(len(soup_lst)):
+        if soup_lst[i] == "Fall Break begins after last class.":
+            pre_friday = datetime.strptime(
+                soup_lst[i - 1] + " " + year, "%B %d %Y")
             break
 
-    return lastday
+    next_day = pre_friday + timedelta(1)
+    while next_day.weekday() != 4:
+        if next_day.weekday() != 5 and next_day.weekday() != 6:
+            fall_break_week.add(next_day)
+        next_day += timedelta(1)
+
+    fall_break_week.add(next_day)
+
+    return fall_break_week
 
 
-# returns a list of every weekday in the semester
-# works for both fall and spring
-def constructmondays(souplst):
-    firstmonday = getfirstweek(souplst)[0]
-    lastday = getlastday(souplst)
+def get_spring_break(soup_lst, year):
+    """
+    Purpose:
+        * returns a list of the weekdays during spring break
+        * only relevant for spring semesters
+    """
+    spring_break_week = set()
 
-    retlst = [firstmonday]
+    # search for the "Spring Break begins after last class." text
+    for i in range(len(soup_lst)):
+        if soup_lst[i] == "Spring Break begins after last class.":
+            pre_friday = datetime.strptime(
+                soup_lst[i - 1] + " " + year, "%B %d %Y")
+            break
 
-    nextmonday = dateadd(firstmonday, 7)
-    while (comparedays(nextmonday, lastday)):
-        retlst.append(nextmonday)
-        nextmonday = dateadd(retlst[-1], 7)
+    next_day = pre_friday + timedelta(1)
+    while next_day.weekday() != 4:
+        if next_day.weekday() != 5 and next_day.weekday() != 6:
+            spring_break_week.add(next_day)
+        next_day += timedelta(1)
 
-    # remove days off for fall semester
-    if (firstmonday[0] == 8):
-        retlst.remove(getfallbreak(souplst)[0])  # fall break
-    # remove days off for spring semester
-    else:
-        retlst.remove(getmlkjrday(souplst))  # MLK Jr. day
-        retlst.remove(getspringbreak(souplst)[0])  # spring break
+    spring_break_week.add(next_day)
 
-    return retlst
-
-
-def constructtuesdays(souplst):
-    firsttuesday = getfirstweek(souplst)[1]
-    lastday = getlastday(souplst)
-
-    retlst = [firsttuesday]
-
-    nexttuesday = dateadd(firsttuesday, 7)
-    while (comparedays(nexttuesday, lastday)):
-        retlst.append(nexttuesday)
-        nexttuesday = dateadd(retlst[-1], 7)
-
-    # remove days off for fall semester
-    if (firsttuesday[0] == 8) or (firsttuesday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[1])  # fall break
-    # remove days off for spring semester
-    else:
-        retlst.remove(getspringbreak(souplst)[1])  # spring break
-
-    return retlst
+    return spring_break_week
 
 
-def constructwednesdays(souplst):
-    firstwednesday = getfirstweek(souplst)[2]
-    lastday = getlastday(souplst)
+def get_thanksgiving_break(soup_lst, year):
+    thanksgiving_break = set()
 
-    retlst = [firstwednesday]
+    # search for the "Thanksgiving Break begins after last class." text
+    for i in range(len(soup_lst)):
+        if soup_lst[i] == "Thanksgiving Break begins after last class.":
+            pre_thanksgiving_day = datetime.strptime(
+                soup_lst[i - 1] + " " + year, "%B %d %Y")
+            break
 
-    nextwednesday = dateadd(firstwednesday, 7)
-    while (comparedays(nextwednesday, lastday)):
-        retlst.append(nextwednesday)
-        nextwednesday = dateadd(retlst[-1], 7)
+    next_day = pre_thanksgiving_day + timedelta(1)
+    while next_day.weekday() != 5:
+        if next_day.weekday() != 5 and next_day.weekday() != 6:
+            thanksgiving_break.add(next_day)
+        next_day += timedelta(1)
 
-    # remove days off for fall semester
-    if (firstwednesday[0] == 8) or (firstwednesday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[2])  # fall break
-    # remove days off for spring semester
-    else:
-        retlst.remove(getspringbreak(souplst)[2])  # spring break
-
-    return retlst
+    return thanksgiving_break
 
 
-def constructthursdays(souplst):
-    firstthursday = getfirstweek(souplst)[3]
-    lastday = getlastday(souplst)
-
-    retlst = [firstthursday]
-
-    nextthursday = dateadd(firstthursday, 7)
-    while (comparedays(nextthursday, lastday)):
-        retlst.append(nextthursday)
-        nextthursday = dateadd(retlst[-1], 7)
-
-    # remove days off for fall semester
-    if (firstthursday[0] == 8) or (firstthursday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[3])  # fall break
-        retlst.remove(getthanksgivingbreak(souplst)[0])  # thanksgiving break
-    # remove days off for spring semester
-    else:
-        retlst.remove(getspringbreak(souplst)[3])  # spring break
-
-    return retlst
+def get_mlkjr_day(soup_lst, year):
+    """
+    Purpose:
+        * returns MLK Jr. day
+        * only relevant for spring semesters
+    """
+    # search for the "Martin Luther King Jr." text
+    for i in range(len(soup_lst)):
+        if "Martin Luther Kind Jr." in soup_lst[i]:
+            return datetime.strptime(
+                soup_lst[i - 1] + " " + year, "%B %d %Y")
 
 
-def constructfridays(souplst):
-    firstfriday = getfirstweek(souplst)[4]
-    lastday = getlastday(souplst)
+def construct_days(first_day, last_day,  blocked_days):
+    all_days = []
+    next_friday = first_day + timedelta(7)
+    while next_friday <= last_day:
+        if next_friday not in blocked_days:
+            all_days.append(next_friday)
+        next_friday += timedelta(7)
 
-    retlst = [firstfriday]
-
-    nextfriday = dateadd(firstfriday, 7)
-    while (comparedays(nextfriday, lastday)):
-        retlst.append(nextfriday)
-        nextfriday = dateadd(retlst[-1], 7)
-
-    # remove days off for fall semester
-    if (firstfriday[0] == 8) or (firstfriday[0] == 9):
-        retlst.remove(getfallbreak(souplst)[4])  # fall break
-        retlst.remove(getthanksgivingbreak(souplst)[1])  # thanksgiving break
-    # remove days off for spring semester
-    else:
-        retlst.remove(getspringbreak(souplst)[4])  # spring break
-
-    return retlst
+    return all_days

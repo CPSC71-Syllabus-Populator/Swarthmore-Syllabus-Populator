@@ -6,8 +6,8 @@ import Events from "./Components/EventsPage/EventsPage";
 
 function App() {
   return (
-    <div class={Style.app}>
-      <Router class={Style.router}>
+    <div className={Style.app}>
+      <Router className={Style.router}>
         <NavigationBar />
         <Switch>
           <Route exact path="/" component={HomePage} />

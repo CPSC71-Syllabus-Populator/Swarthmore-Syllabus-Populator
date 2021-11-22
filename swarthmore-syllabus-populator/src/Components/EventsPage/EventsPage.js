@@ -23,9 +23,7 @@ const Events = () => {
       })
       .then((data) => {
         console.log(data);
-        const parsed_events = data["events"];
-        console.log(typeof parsed_events);
-        setEvents(data["events"]);
+        setEvents(data["parsed_events"]);
       })
       .catch((error) => {
         console.log(error);
@@ -42,35 +40,40 @@ const Events = () => {
   ));
 
   return (
-    <div class={Style.container}>
+    <div className={Style.container}>
       {loading ? (
         <Box sx={{ display: "flex" }}>
           <CircularProgress />
         </Box>
       ) : (
-        <div class={Style.events_container}>
-          <div class={Style.events_grid}>{EventsContainer}</div>
+        <div className={Style.events_container}>
+          <div className={Style.events_grid}>{EventsContainer}</div>
 
           <button
-            class={Style.add_events_button}
-            onClick={() => {
-              const data = new FormData();
-              data.append("json_events", JSON.stringify(events));
+            className={Style.add_events_button}
+            onClick={async () => {
+              const selected_events = [];
+              for (let i = 0; i < events.length; i++) {
+                if (events[i]["checked"] === true) {
+                  selected_events.push(events[i]);
+                }
+              }
 
-              const response = fetch("/post_events_to_calendar", {
+              const data = new FormData();
+              data.append("selected_events", JSON.stringify(selected_events));
+
+              const response = await fetch("/post_events_to_calendar", {
                 method: "POST",
                 body: data,
               });
 
-              if (response.ok == true) {
+              console.log(response);
+
+              if (response.ok) {
                 console.log("/post_events_to_calendar request succeeded");
               } else {
                 console.error("/post_events_to_calendar request failed");
               }
-              // events.map((event) => {
-              //   if (event["checked"] == true) {
-              //   }
-              // });
             }}
           >
             Add to Calendar

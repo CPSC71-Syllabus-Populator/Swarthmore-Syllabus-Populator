@@ -1,8 +1,8 @@
 from flask import Blueprint, request, session
 from werkzeug.utils import secure_filename
-from api.parsing import parse_text_for_events
+from api.parsing import parse_syllabi_events
 from api.create_gcal_events import verify_google_credentials
-from api.utils import build_google_calendar_events_JSON, extract_syllabi_text, serialize_parsed_events_to_JSON
+from api.utils import build_google_calendar_events_JSON, get_semester_dates, get_syllabi_text
 import json
 import os
 
@@ -18,14 +18,13 @@ def parse_pdf():
         os.mkdir(UPLOAD_FOLDER)
 
     file = request.files['file']
-    fileName = secure_filename(file.filename)
-    destination = "/".join([UPLOAD_FOLDER, fileName])
+    file_name = secure_filename(file.filename)
+    destination = "/".join([UPLOAD_FOLDER, file_name])
     file.save(destination)
 
-    syllabi_text = extract_syllabi_text(file)
-    parsed_events = parse_text_for_events(syllabi_text)
-    json_data = serialize_parsed_events_to_JSON(parsed_events)
-    session['json_data'] = json_data
+    syllabi_text = get_syllabi_text(file)
+    parsed_events = parse_syllabi_events(syllabi_text)
+    session['parsed_events'] = parsed_events
 
     return 'Successfully parsed PDF', 201
 
@@ -33,34 +32,29 @@ def parse_pdf():
 @main.route('/parse_text', methods=['POST', 'GET'])
 def parse_text():
     syllabi_text = request.form['text']
-    parsed_events = parse_text_for_events(syllabi_text)
-    json_data = serialize_parsed_events_to_JSON(parsed_events)
-    session['json_data'] = json_data
+    parsed_events = parse_syllabi_events(syllabi_text)
+    session['parsed_events'] = parsed_events
 
     return "Successfully parsed text", 201
 
 
 @main.route('/get_events', methods=['GET'])
 def get_events():
-    for i in range(1000):
-        for j in range(100000):
-            ...
-    return session['json_data'], 201
+    return {'parsed_events': session['parsed_events']}, 201
 
 
 @main.route('/post_events_to_calendar', methods=['POST'])
 def post_events_to_calendar():
-    events = request.form["json_events"]
-    json_events = json.loads(events)
+    selected_events = json.loads(request.form['selected_events'])
 
-    json_data = build_google_calendar_events_JSON(json_events)
+    all_dates = get_semester_dates()
+    events_to_publish = build_google_calendar_events_JSON(
+        selected_events, all_dates)
 
     gcal_service = verify_google_credentials(SCOPES)
 
-    print(json_data[0])
+    for event in events_to_publish:
+        gcal_service.events().insert(
+            calendarId='primary', body=event).execute()
 
-    for json_event in json_data:
-        event = gcal_service.events().insert(
-            calendarId='primary', body=json_event).execute()
-
-    return "posted", 201
+    return "Successfully added to calendar", 201

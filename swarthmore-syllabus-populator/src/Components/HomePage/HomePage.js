@@ -2,11 +2,9 @@ import React from "react";
 import { useState } from "react";
 import FileInputBox from "./FileInputBox/FileInputBox";
 import TextInputBox from "./TextInputBox/TextInputBox";
-import LinkInputBox from "./LinkInputBox/LinkInputBox";
 import Fab from "@mui/material/Fab";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
-import LinkIcon from "@mui/icons-material/Link";
 import { styled } from "@mui/material/styles";
 import Style from "./HomePage.module.scss";
 
@@ -21,9 +19,9 @@ const HomePage = () => {
   }));
 
   return (
-    <div class={Style.container}>
-      <div class={Style.input}>
-        <div class={Style.input_left}>
+    <div className={Style.container}>
+      <div className={Style.input}>
+        <div className={Style.input_left}>
           <StyledFab
             size="medium"
             onClick={() => {
@@ -42,7 +40,7 @@ const HomePage = () => {
             <TextFieldsIcon sx={{ color: "white" }} />
           </StyledFab>
         </div>
-        <div class={Style.input_right}>
+        <div className={Style.input_right}>
           {inputMethod === "File" ? <FileInputBox /> : <></>}
           {inputMethod === "Text" ? <TextInputBox /> : <></>}
         </div>
