@@ -6,21 +6,31 @@ This repository contains the source code for the Syllabus Google Calendar Popula
 ## Tools used
 
 - Front-end: React.js, HTML, JavaScript, CSS;
-- Backend: Flask (Python);
+- Backend: Flask (Python 3.4 or higher);
 - Google Calendar API was used to integrate our web application with Google Calendar; 
-- DFPlumber (Python): a module for extracting text from PDF files.
+- PDFplumber (Python): a module for extracting text from PDF files.
 
+
+
+## Requirements/dependencies
+```bash
+pip install Flask
+# todo
 
 
 <!---
- 
-## Requirements/dependencies
-```bash
-pip install XXX
-# todo
-
+ comment
 -->
 
+
+## Quick Start
+```bash
+git clone https://github.com/CPSC71-Syllabus-Populator/Swarthmore-Syllabus-Populator.git
+cd Swarthmore-Syllabus-Populator/swarthmore-syllabus
+npm start     # runs the node script
+cd ..
+export FLASK_APP=api
+python3 -m flask run   # the server
 
 
 
