@@ -12,13 +12,13 @@ This repository contains the source code for the Syllabus Google Calendar Popula
 
 
 
+<!---
+
 ## Requirements/dependencies
 ```bash
 pip install Flask
 # todo
 
-
-<!---
  comment
 -->
 
