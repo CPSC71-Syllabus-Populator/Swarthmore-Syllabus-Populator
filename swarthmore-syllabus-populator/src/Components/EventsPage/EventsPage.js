@@ -3,10 +3,13 @@ import Event from "./EventCard/EventCard";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Style from "./EventsPage.module.scss";
+import { useHistory } from "react-router-dom";
 
 const Events = () => {
   const [events, setEvents] = useState([{}]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  let history = useHistory();
 
   useEffect(() => {
     fetch("/get_events", {
@@ -29,7 +32,7 @@ const Events = () => {
         console.log(error);
       })
       .finally(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   }, []);
 
@@ -62,18 +65,23 @@ const Events = () => {
               const data = new FormData();
               data.append("selected_events", JSON.stringify(selected_events));
 
-              const response = await fetch("/post_events_to_calendar", {
+              setLoading(true);
+              await fetch("/post_events_to_calendar", {
                 method: "POST",
                 body: data,
-              });
-
-              console.log(response);
-
-              if (response.ok) {
-                console.log("/post_events_to_calendar request succeeded");
-              } else {
-                console.error("/post_events_to_calendar request failed");
-              }
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw response;
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                })
+                .finally(() => {
+                  setLoading(false);
+                  history.push("./");
+                });
             }}
           >
             Add to Calendar
